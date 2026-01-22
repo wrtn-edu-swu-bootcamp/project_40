@@ -43,14 +43,14 @@ function WordsPage() {
   }
   
   return (
-    <div className="min-h-screen bg-[var(--color-ivory)] p-6">
+    <div className="min-h-screen bg-[var(--color-ivory)] p-8">
       <div className="max-w-7xl mx-auto">
         {/* 헤더 */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-[var(--color-text)] mb-2">
+        <div className="mb-8">
+          <h1 className="text-[var(--font-size-display)] font-semibold text-[var(--color-text)] mb-2 tracking-tight">
             내 단어장
           </h1>
-          <p className="text-sm text-[var(--color-text-light)]">
+          <p className="text-[var(--font-size-body)] text-[var(--color-text-light)]">
             저장한 단어를 관리하고 학습하세요
           </p>
         </div>
@@ -68,8 +68,8 @@ function WordsPage() {
           
           {/* 중앙: 단어 목록 */}
           <div className="col-span-5">
-            <div className="bg-white rounded-lg border border-[var(--color-border)] p-4 h-[700px] overflow-y-auto">
-              <h2 className="text-lg font-bold text-[var(--color-text)] mb-4">
+            <div className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border)] p-5 h-[700px] overflow-y-auto shadow-[var(--shadow-subtle)]">
+              <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-4">
                 단어 목록 ({filteredWords.length})
               </h2>
               
@@ -104,15 +104,15 @@ function WordsPage() {
           
           {/* 우측: 단어 상세 */}
           <div className="col-span-5">
-            <div className="bg-white rounded-lg border border-[var(--color-border)] p-6 h-[700px] overflow-y-auto">
+            <div className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border)] p-6 h-[700px] overflow-y-auto shadow-[var(--shadow-subtle)]">
               {selectedWord ? (
                 <>
                   <div className="mb-6">
-                    <div className="flex items-baseline gap-3 mb-3">
-                      <h2 className="text-3xl font-bold text-[var(--color-text)] japanese">
+                    <div className="flex items-baseline gap-3 mb-4">
+                      <h2 className="text-[2rem] font-semibold text-[var(--color-text)] japanese">
                         {selectedWord.word}
                       </h2>
-                      <span className="text-xl text-[var(--color-text-light)] japanese">
+                      <span className="text-[1.25rem] text-[var(--color-text-light)] japanese">
                         {selectedWord.reading}
                       </span>
                     </div>
@@ -138,17 +138,17 @@ function WordsPage() {
                   
                   {/* 뜻 */}
                   <div className="mb-6">
-                    <h3 className="text-sm font-bold text-[var(--color-text)] mb-2">
+                    <h3 className="text-[var(--font-size-body)] font-semibold text-[var(--color-text)] mb-3">
                       의미
                     </h3>
                     {selectedWord.meanings.map((meaning, idx) => (
-                      <div key={idx} className="mb-3">
-                        <div className="text-sm text-[var(--color-text-lighter)] mb-1">
+                      <div key={idx} className="mb-4 p-3 rounded-[var(--radius-md)] bg-[var(--color-cream-tint)]">
+                        <div className="text-[var(--font-size-small)] text-[var(--color-text-lighter)] mb-2 font-medium">
                           {meaning.partOfSpeech}
                         </div>
-                        <ul className="list-disc list-inside space-y-1">
+                        <ul className="list-disc list-inside space-y-1.5">
                           {meaning.definitions.map((def, defIdx) => (
-                            <li key={defIdx} className="text-sm text-[var(--color-text)]">
+                            <li key={defIdx} className="text-[var(--font-size-body)] text-[var(--color-text)] leading-relaxed">
                               {def}
                             </li>
                           ))}
@@ -160,14 +160,14 @@ function WordsPage() {
                   {/* 한자 정보 */}
                   {selectedWord.kanji.length > 0 && (
                     <div className="mb-6">
-                      <h3 className="text-sm font-bold text-[var(--color-text)] mb-2">
+                      <h3 className="text-[var(--font-size-body)] font-semibold text-[var(--color-text)] mb-3">
                         포함된 한자
                       </h3>
                       <div className="flex gap-2 flex-wrap">
                         {selectedWord.kanji.map((k, idx) => (
                           <span
                             key={idx}
-                            className="px-3 py-1 rounded-md bg-[var(--color-cream-tint)] border border-[var(--color-border)] text-lg japanese"
+                            className="px-4 py-2 rounded-[var(--radius-md)] bg-[var(--color-sky-tint)] border border-[var(--color-sky-blue)] text-[1.125rem] japanese font-medium"
                           >
                             {k}
                           </span>
@@ -177,20 +177,20 @@ function WordsPage() {
                   )}
                   
                   {/* 학습 통계 */}
-                  <div className="mb-6 p-4 rounded-lg bg-[var(--color-cream-tint)]">
-                    <h3 className="text-sm font-bold text-[var(--color-text)] mb-2">
+                  <div className="mb-6 p-5 rounded-[var(--radius-lg)] bg-[var(--color-info-bg)] border border-[var(--color-sky-blue)]">
+                    <h3 className="text-[var(--font-size-body)] font-semibold text-[var(--color-text)] mb-3">
                       학습 기록
                     </h3>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="grid grid-cols-2 gap-4 text-[var(--font-size-body)]">
                       <div>
-                        <div className="text-[var(--color-text-lighter)]">복습 횟수</div>
-                        <div className="font-bold text-[var(--color-text)]">
+                        <div className="text-[var(--color-text-lighter)] mb-1">복습 횟수</div>
+                        <div className="font-semibold text-[1.25rem] text-[var(--color-text)]">
                           {selectedWord.reviewCount}회
                         </div>
                       </div>
                       <div>
-                        <div className="text-[var(--color-text-lighter)]">정답률</div>
-                        <div className="font-bold text-[var(--color-text)]">
+                        <div className="text-[var(--color-text-lighter)] mb-1">정답률</div>
+                        <div className="font-semibold text-[1.25rem] text-[var(--color-text)]">
                           {selectedWord.reviewCount > 0
                             ? Math.round((selectedWord.correctCount / selectedWord.reviewCount) * 100)
                             : 0}%

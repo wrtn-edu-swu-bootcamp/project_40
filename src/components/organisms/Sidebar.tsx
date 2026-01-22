@@ -58,13 +58,13 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
   ];
   
   return (
-    <aside className={cn('w-64 bg-white border-r border-[var(--color-border)] p-6 min-h-screen', className)}>
+    <aside className={cn('w-[220px] bg-[var(--color-gray-tint)] border-r border-[var(--color-border)] p-6 min-h-screen', className)}>
       {/* 로고 */}
-      <div className="mb-8">
-        <h1 className="text-xl font-bold text-[var(--color-text)] mb-1">
+      <div className="mb-8 pb-6 border-b border-[var(--color-border)]">
+        <h1 className="text-[var(--font-size-h3)] font-semibold text-[var(--color-text)] mb-1">
           일본어 단어장
         </h1>
-        <p className="text-xs text-[var(--color-text-light)]">
+        <p className="text-[var(--font-size-tiny)] text-[var(--color-text-light)]">
           한자 자동 그룹화
         </p>
       </div>
@@ -77,12 +77,12 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
               <Link
                 to={item.to}
                 className={cn(
-                  'flex items-center gap-3 px-4 py-2 rounded-md text-sm transition-colors',
-                  'hover:bg-[var(--color-light-beige)]',
-                  '[&.active]:bg-[var(--color-sky-blue)] [&.active]:text-white [&.active]:font-medium'
+                  'flex items-center gap-3 px-4 py-3 rounded-[var(--radius-md)] text-[var(--font-size-body)] text-[var(--color-text-light)] transition-all duration-150',
+                  'hover:bg-[var(--color-cream-tint)] hover:text-[var(--color-text)]',
+                  '[&.active]:bg-[var(--color-cream-tint)] [&.active]:text-[var(--color-sky-blue)] [&.active]:border-l-[3px] [&.active]:border-[var(--color-sky-blue)] [&.active]:font-semibold [&.active]:pl-[13px]'
                 )}
               >
-                <span className="text-lg">{item.icon}</span>
+                <span className="text-base">{item.icon}</span>
                 <span>{item.label}</span>
               </Link>
             </li>
@@ -91,8 +91,8 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
       </nav>
       
       {/* 데이터 관리 */}
-      <div className="border-t border-[var(--color-border)] pt-6">
-        <h3 className="text-xs font-bold text-[var(--color-text-light)] mb-3 uppercase">
+      <div className="border-t border-[var(--color-border)] pt-6 mt-auto">
+        <h3 className="text-[var(--font-size-tiny)] font-semibold text-[var(--color-text-light)] mb-3 uppercase tracking-wider">
           데이터 관리
         </h3>
         <div className="space-y-2">
@@ -100,7 +100,7 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
             variant="secondary"
             size="sm"
             onClick={handleExport}
-            className="w-full justify-start"
+            className="w-full justify-start text-[var(--font-size-small)]"
           >
             📥 내보내기
           </Button>
@@ -109,7 +109,7 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
             size="sm"
             onClick={handleImport}
             disabled={isImporting}
-            className="w-full justify-start"
+            className="w-full justify-start text-[var(--font-size-small)]"
           >
             📤 {isImporting ? '가져오는 중...' : '가져오기'}
           </Button>

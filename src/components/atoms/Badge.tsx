@@ -15,14 +15,14 @@ export const Badge = memo(function Badge({
   jlptLevel,
   className,
 }: BadgeProps) {
-  const baseStyles = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium';
+  const baseStyles = 'inline-flex items-center justify-center h-5 px-2 rounded-[var(--radius-md)] text-[var(--font-size-tiny)] font-semibold tracking-wider';
   
   const jlptColors: Record<JlptLevel, string> = {
-    N5: 'bg-[var(--color-jlpt-n5)] text-[var(--color-text)]',
-    N4: 'bg-[var(--color-jlpt-n4)] text-[var(--color-text)]',
-    N3: 'bg-[var(--color-jlpt-n3)] text-[var(--color-text)]',
-    N2: 'bg-[var(--color-jlpt-n2)] text-[var(--color-text)]',
-    N1: 'bg-[var(--color-jlpt-n1)] text-white',
+    N5: 'bg-[var(--color-gray-tint)] text-[var(--color-dark-gray)]',
+    N4: 'bg-[var(--color-gray-tint)] text-[var(--color-dark-gray)]',
+    N3: 'bg-[var(--color-cream-yellow)] text-[#8a7a4a]',
+    N2: 'bg-[var(--color-sky-blue)] text-white',
+    N1: 'bg-[var(--color-coral-pink)] text-white',
   };
   
   const variantStyles = variant === 'jlpt' && jlptLevel

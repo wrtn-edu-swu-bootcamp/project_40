@@ -54,26 +54,26 @@ function SearchPage() {
   }
   
   return (
-    <div className="min-h-screen bg-[var(--color-ivory)] p-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-[var(--color-ivory)] p-8">
+      <div className="max-w-7xl mx-auto">
         {/* 헤더 */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-[var(--color-text)] mb-2">
+        <div className="mb-8">
+          <h1 className="text-[var(--font-size-display)] font-semibold text-[var(--color-text)] mb-2 tracking-tight">
             단어 검색
           </h1>
-          <p className="text-sm text-[var(--color-text-light)]">
+          <p className="text-[var(--font-size-body)] text-[var(--color-text-light)]">
             히라가나 또는 한자로 단어를 검색하세요
           </p>
         </div>
         
         {/* 검색바 */}
-        <SearchBar onSearch={search} className="mb-6" />
+        <SearchBar onSearch={search} className="mb-8" />
         
         {/* 2단 레이아웃 */}
         <div className="grid grid-cols-2 gap-6">
           {/* 좌측: 검색 결과 리스트 */}
-          <div className="bg-white rounded-lg border border-[var(--color-border)] p-4 h-[600px] overflow-y-auto">
-            <h2 className="text-lg font-bold text-[var(--color-text)] mb-4">
+          <div className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border)] p-5 h-[650px] overflow-y-auto shadow-[var(--shadow-subtle)]">
+            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-4">
               검색 결과 ({results.length})
             </h2>
             
@@ -89,26 +89,31 @@ function SearchPage() {
               </div>
             )}
             
-            <div className="space-y-2">
+            <div className="space-y-3">
               {results.map((entry, index) => (
                 <div
                   key={index}
-                  className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                  className={`p-4 rounded-[var(--radius-md)] border-[var(--border-thin)] cursor-pointer transition-all duration-150 ${
                     selectedIndex === index
-                      ? 'border-[var(--color-sky-blue)] bg-[var(--color-cream-tint)] shadow-md'
-                      : 'border-[var(--color-border)] hover:border-[var(--color-sky-blue)]'
+                      ? 'border-[var(--color-sky-blue)] bg-[var(--color-sky-tint)] shadow-[var(--shadow-soft)]'
+                      : 'border-[var(--color-border)] bg-[var(--color-cream-tint)] hover:border-[var(--color-medium-gray)] hover:shadow-[var(--shadow-subtle)]'
                   }`}
                   onClick={() => setSelectedIndex(index)}
                 >
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-base font-bold text-[var(--color-text)] japanese">
+                  <div className="flex items-baseline gap-2 mb-1.5">
+                    <span className="text-[var(--font-size-h2)] font-medium text-[var(--color-text)] japanese">
                       {entry.word}
                     </span>
-                    <span className="text-sm text-[var(--color-text-light)] japanese">
+                    <span className="text-[var(--font-size-small)] text-[var(--color-text-light)] japanese">
                       {entry.reading}
                     </span>
+                    {entry.jlptLevel && (
+                      <Badge variant="jlpt" jlptLevel={entry.jlptLevel} className="ml-auto">
+                        {entry.jlptLevel}
+                      </Badge>
+                    )}
                   </div>
-                  <div className="text-sm text-[var(--color-text)]">
+                  <div className="text-[var(--font-size-body)] text-[var(--color-text)] leading-relaxed">
                     {entry.meanings[0]?.definitions[0]}
                   </div>
                 </div>
@@ -117,15 +122,15 @@ function SearchPage() {
           </div>
           
           {/* 우측: 선택한 단어 상세 */}
-          <div className="bg-white rounded-lg border border-[var(--color-border)] p-6 h-[600px] overflow-y-auto">
+          <div className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border)] p-6 h-[650px] overflow-y-auto shadow-[var(--shadow-subtle)]">
             {selectedResult ? (
               <>
                 <div className="mb-6">
-                  <div className="flex items-baseline gap-3 mb-3">
-                    <h2 className="text-3xl font-bold text-[var(--color-text)] japanese">
+                  <div className="flex items-baseline gap-3 mb-4">
+                    <h2 className="text-[2rem] font-semibold text-[var(--color-text)] japanese">
                       {selectedResult.word}
                     </h2>
-                    <span className="text-xl text-[var(--color-text-light)] japanese">
+                    <span className="text-[1.25rem] text-[var(--color-text-light)] japanese">
                       {selectedResult.reading}
                     </span>
                   </div>
@@ -139,17 +144,17 @@ function SearchPage() {
                 
                 {/* 뜻 */}
                 <div className="mb-6">
-                  <h3 className="text-sm font-bold text-[var(--color-text)] mb-2">
+                  <h3 className="text-[var(--font-size-body)] font-semibold text-[var(--color-text)] mb-3">
                     의미
                   </h3>
                   {selectedResult.meanings.map((meaning, idx) => (
-                    <div key={idx} className="mb-3">
-                      <div className="text-sm text-[var(--color-text-lighter)] mb-1">
+                    <div key={idx} className="mb-4 p-3 rounded-[var(--radius-md)] bg-[var(--color-cream-tint)]">
+                      <div className="text-[var(--font-size-small)] text-[var(--color-text-lighter)] mb-2 font-medium">
                         {meaning.partOfSpeech}
                       </div>
-                      <ul className="list-disc list-inside space-y-1">
+                      <ul className="list-disc list-inside space-y-1.5">
                         {meaning.definitions.map((def, defIdx) => (
-                          <li key={defIdx} className="text-sm text-[var(--color-text)]">
+                          <li key={defIdx} className="text-[var(--font-size-body)] text-[var(--color-text)] leading-relaxed">
                             {def}
                           </li>
                         ))}

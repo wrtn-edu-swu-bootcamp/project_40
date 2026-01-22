@@ -204,12 +204,34 @@ export const SAMPLE_DICTIONARY: DictionaryEntry[] = [
 
 // 단어 검색 함수 (딕셔너리에서)
 export function searchDictionary(query: string): DictionaryEntry[] {
-  const normalizedQuery = query.toLowerCase();
+  const normalizedQuery = query.trim();
   
-  return SAMPLE_DICTIONARY.filter((entry) => {
-    return (
-      entry.word.includes(normalizedQuery) ||
-      entry.reading.includes(normalizedQuery)
-    );
+  // #region agent log
+  console.log('🔍 [searchDictionary] START', {originalQuery: query, normalizedQuery, dictionarySize: SAMPLE_DICTIONARY.length, hypothesisId: 'A,B,C'});
+  // #endregion
+  
+  if (!normalizedQuery) {
+    return [];
+  }
+  
+  const results = SAMPLE_DICTIONARY.filter((entry) => {
+    const wordMatch = entry.word.includes(normalizedQuery);
+    const readingMatch = entry.reading.includes(normalizedQuery);
+    const meaningMatch = entry.meanings.some(m => m.definitions.some(d => d.includes(normalizedQuery)));
+    const matches = wordMatch || readingMatch || meaningMatch;
+    
+    // #region agent log
+    if (matches) {
+      console.log('✅ [Entry matched]', {word: entry.word, reading: entry.reading, normalizedQuery, wordMatch, readingMatch, meaningMatch, hypothesisId: 'B,D,E'});
+    }
+    // #endregion
+    
+    return matches;
   });
+  
+  // #region agent log
+  console.log('🔍 [searchDictionary] END', {normalizedQuery, totalEntries: SAMPLE_DICTIONARY.length, matchedCount: results.length, matchedWords: results.map(r=>r.word), hypothesisId: 'A,E'});
+  // #endregion
+  
+  return results;
 }

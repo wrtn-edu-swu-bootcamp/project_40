@@ -9,9 +9,16 @@ export function useSearch() {
     setIsSearching(true);
     setQuery(searchQuery);
     
+    // #region agent log
+    console.log('🔎 [useSearch] CALLED', {searchQuery, queryLength: searchQuery.length, queryCharCodes: Array.from(searchQuery).map(c=>c.charCodeAt(0)), hypothesisId: 'C,D'});
+    // #endregion
+    
     try {
       // 샘플 데이터에서 검색
       const searchResults = searchDictionary(searchQuery);
+      // #region agent log
+      console.log('📊 [useSearch] RESULTS', {searchQuery, resultsCount: searchResults.length, results: searchResults.map(r=>r.word), hypothesisId: 'A,E'});
+      // #endregion
       setResults(searchResults);
     } catch (error) {
       console.error('검색 중 오류 발생:', error);

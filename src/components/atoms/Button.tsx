@@ -15,19 +15,19 @@ export const Button = memo(function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center rounded-md font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
+  const baseStyles = 'inline-flex items-center justify-center rounded-[var(--radius-lg)] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none';
   
   const variantStyles = {
-    primary: 'bg-[var(--color-sky-blue)] text-white hover:opacity-90 focus-visible:ring-[var(--color-sky-blue)]',
-    secondary: 'border border-[var(--color-border)] bg-transparent hover:bg-[var(--color-light-beige)] focus-visible:ring-[var(--color-border)]',
-    ghost: 'hover:bg-[var(--color-light-beige)] focus-visible:ring-[var(--color-border)]',
-    danger: 'bg-[var(--color-error)] text-white hover:opacity-90 focus-visible:ring-[var(--color-error)]',
+    primary: 'bg-[var(--color-sky-blue)] text-white hover:bg-[#7ab0d0] active:scale-[0.98] shadow-[var(--shadow-subtle)]',
+    secondary: 'border border-[var(--color-border)] bg-transparent text-[var(--color-dark-gray)] hover:border-[var(--color-sky-blue)] hover:bg-[var(--color-sky-tint)]',
+    ghost: 'bg-transparent text-[var(--color-sky-blue)] hover:bg-[var(--color-sky-tint)]',
+    danger: 'bg-[var(--color-coral-pink)] text-white hover:bg-[#d15876] active:scale-[0.98]',
   };
   
   const sizeStyles = {
-    sm: 'h-7 px-3 text-xs',
-    md: 'h-9 px-4 text-sm',
-    lg: 'h-11 px-6 text-base',
+    sm: 'h-7 px-3 text-[var(--font-size-small)]',
+    md: 'h-9 px-6 text-[var(--font-size-body)]',
+    lg: 'h-11 px-8 text-[var(--font-size-h3)]',
   };
   
   return (
