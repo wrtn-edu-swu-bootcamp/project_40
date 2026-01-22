@@ -116,41 +116,51 @@ function SearchPage() {
           </div>
         )}
 
-        {/* 검색 결과가 있을 때 */}
-        {!isSearching && results.length > 0 && (
-          <div className="space-y-8">
-            {/* 검색 결과 목록 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {results.map((result, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleResultSelect(result)}
-                  className={`p-4 rounded-[var(--radius-md)] border text-left transition-all duration-150 ${
-                    selectedResult === result
-                      ? 'border-[var(--color-sky-blue)] bg-[var(--color-sky-tint)] shadow-[var(--shadow-soft)]'
-                      : 'border-[var(--color-border)] bg-white hover:border-[var(--color-medium-gray)] hover:shadow-[var(--shadow-subtle)]'
-                  }`}
-                >
-                  <div className="flex items-baseline gap-2 mb-2">
-                    <span className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] japanese">
-                      {result.word}
-                    </span>
-                    <span className="text-[var(--font-size-small)] text-[var(--color-text-light)] japanese">
-                      {result.reading}
-                    </span>
-                  </div>
-                  <div className="text-[var(--font-size-small)] text-[var(--color-text)] line-clamp-2">
-                    {result.meanings[0]?.definitions[0]}
-                  </div>
-                </button>
-              ))}
-            </div>
+        {/* 검색 결과 목록 (단어가 선택되지 않았을 때만 표시) */}
+        {!isSearching && results.length > 0 && !selectedResult && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {results.map((result, index) => (
+              <button
+                key={index}
+                onClick={() => handleResultSelect(result)}
+                className="p-4 rounded-[var(--radius-md)] border text-left transition-all duration-150 border-[var(--color-border)] bg-white hover:border-[var(--color-medium-gray)] hover:shadow-[var(--shadow-subtle)]"
+              >
+                <div className="flex items-baseline gap-2 mb-2">
+                  <span className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] japanese">
+                    {result.word}
+                  </span>
+                  <span className="text-[var(--font-size-small)] text-[var(--color-text-light)] japanese">
+                    {result.reading}
+                  </span>
+                </div>
+                <div className="text-[var(--font-size-small)] text-[var(--color-text)] line-clamp-2">
+                  {result.meanings[0]?.definitions[0]}
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* 다른 검색 결과 보기 버튼 (단어가 선택되었고 결과가 2개 이상일 때) */}
+        {selectedResult && results.length > 1 && (
+          <div className="mb-4">
+            <button
+              onClick={() => {
+                setSelectedResult(null);
+                setSelectedKanji(null);
+                setSelectedComponent(null);
+                setComponentKanjiList([]);
+              }}
+              className="inline-flex items-center gap-2 text-[var(--font-size-body)] text-[var(--color-sky-blue)] hover:text-[var(--color-text)] transition-colors font-medium"
+            >
+              ← 다른 검색 결과 보기 ({results.length}개)
+            </button>
           </div>
         )}
 
         {/* 섹션 1: 선택한 단어 상세 */}
         {selectedResult && (
-          <div className="mt-8 p-6 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white shadow-[var(--shadow-subtle)]">
+          <div className="p-6 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white shadow-[var(--shadow-subtle)]">
             <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-4">
               검색된 단어
             </h2>
