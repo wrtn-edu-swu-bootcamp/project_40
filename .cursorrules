@@ -1,0 +1,513 @@
+# 일본어 학습 단어장 서비스 - Cursor Rules
+
+## 프로젝트 개요
+
+**서비스**: 비슷한 한자를 자동으로 그룹화해주는 일본어 학습 단어장
+**핵심 차별점**: 한자 자동 그룹화 (부수, 구성요소, 음독/훈독 기반)
+**디자인 콘셉트**: Midori/Kokuyo 다이어리 빈티지 감성
+**타겟**: 데스크톱 웹 우선 (반응형은 Phase 2)
+
+## 기술 스택
+
+### Core (2026년 최신 안정 버전)
+- React 19.2.3 (함수형 컴포넌트, hooks)
+- Vite 7.3.1 (빌드 도구)
+- TypeScript 5.9 (strict mode)
+
+### 라우팅 & 상태
+- TanStack Router 1.154.0 (파일 기반 라우팅, 완전한 타입 안전성)
+- Zustand 5.0.3 (전역 상태 관리, 1.16KB)
+
+### 데이터 & 스타일
+- Dexie.js 4.2.1 + dexie-react-hooks 1.1.7 (IndexedDB, 오프라인 우선)
+- Tailwind CSS 4.0.0 (Rust 기반, 5배 빠름)
+- Framer Motion 12.12.0 (애니메이션)
+
+### 유틸리티
+- date-fns 4.1.0 (날짜 처리)
+- clsx 2.1.1 (className 유틸)
+
+## 코드 스타일 & 패턴
+
+### TypeScript 규칙
+- **함수형/선언적 패턴** 사용
+- **클래스 금지**, `function` 키워드로 순수 함수 작성
+- **Named exports** 우선 (default export 지양)
+- **Interface over type** (enum 대신 map/object 사용)
+- **Strict mode** 활성화
+
+```typescript
+// ✅ Good
+export interface WordCardProps {
+  word: Word;
+  onToggle?: (id: string) => void;
+}
+
+export function WordCard({ word, onToggle }: WordCardProps) {
+  // ...
+}
+
+// ❌ Bad
+export type WordCardProps = { /* ... */ }
+export default class WordCard extends Component { /* ... */ }
+```
+
+### 네이밍 규칙
+- **변수**: camelCase, 보조 동사 사용 (`isLoading`, `hasError`, `canEdit`)
+- **컴포넌트 파일**: PascalCase.tsx (`WordCard.tsx`)
+- **Hooks**: camelCase + `use` 접두사 (`useWords.ts`, `useKanjiAnalysis.ts`)
+- **Types/Interfaces**: PascalCase (`Word`, `KanjiInfo`, `GroupType`)
+- **Utils**: camelCase (`formatDate.ts`, `cn.ts`)
+- **폴더**: kebab-case (`kanji-analysis/`, `word-detail/`)
+
+### Import 순서
+```typescript
+// 1. External dependencies
+import { useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
+
+// 2. Internal absolute imports
+import { Button } from '@/components/atoms/Button';
+import { useWords } from '@/features/words/hooks/useWords';
+
+// 3. Relative imports
+import { formatDate } from './utils';
+
+// 4. CSS imports
+import './styles.css';
+```
+
+## 프로젝트 구조
+
+```
+src/
+├── routes/                    # TanStack Router 파일 기반 라우팅
+│   ├── __root.tsx            # 루트 레이아웃
+│   ├── index.tsx             # / - 대시보드
+│   ├── search.tsx            # /search
+│   ├── words/
+│   │   ├── index.tsx         # /words
+│   │   └── $wordId.tsx       # /words/:wordId
+│   ├── groups/
+│   │   ├── index.tsx         # /groups
+│   │   └── $groupId.tsx      # /groups/:groupId
+│   └── study.tsx             # /study
+│
+├── components/               # Atomic Design 패턴
+│   ├── atoms/               # Button, Input, Badge
+│   ├── molecules/           # WordCard, SearchBar
+│   ├── organisms/           # Sidebar, Header, Flashcard
+│   └── templates/           # DashboardLayout
+│
+├── features/                # Feature-based modules
+│   ├── search/
+│   │   ├── hooks/
+│   │   ├── utils/
+│   │   └── types.ts
+│   ├── words/
+│   ├── kanji/               # 한자 분석 엔진 (핵심)
+│   ├── groups/              # 그룹 관리
+│   └── study/
+│
+├── lib/                     # 핵심 라이브러리
+│   ├── db/                  # Dexie.js 설정
+│   │   ├── dexie.ts
+│   │   ├── schema.ts
+│   │   └── queries.ts
+│   ├── data/                # 정적 데이터 로더
+│   └── utils/               # 공통 유틸
+│
+├── stores/                  # Zustand stores
+│   ├── useAppStore.ts
+│   ├── useSearchStore.ts
+│   └── useWordStore.ts
+│
+└── types/                   # 전역 타입
+    ├── word.ts
+    ├── kanji.ts
+    └── group.ts
+```
+
+## 라우팅 (TanStack Router)
+
+### 파일 기반 라우팅
+- `routes/` 폴더 구조 = URL 구조
+- `$paramName.tsx` = 동적 파라미터
+- `__root.tsx` = 루트 레이아웃
+- 자동 타입 생성 (`routeTree.gen.ts`)
+
+```typescript
+// routes/words/$wordId.tsx
+import { createFileRoute } from '@tanstack/react-router';
+
+export const Route = createFileRoute('/words/$wordId')({
+  component: WordDetailPage,
+});
+
+function WordDetailPage() {
+  const { wordId } = Route.useParams(); // 타입 안전!
+  // ...
+}
+```
+
+### 라우트 네비게이션
+```typescript
+// ✅ 타입 안전한 네비게이션
+<Link to="/words/$wordId" params={{ wordId: '123' }}>
+  단어 보기
+</Link>
+
+// ❌ 컴파일 에러
+<Link to="/invalid-route">
+```
+
+## 상태 관리
+
+### 3-티어 상태 관리
+1. **Zustand**: 전역 앱 상태 (UI, 검색)
+2. **Dexie React Hooks**: DB 실시간 쿼리
+3. **useState**: 컴포넌트 로컬 상태
+
+```typescript
+// Zustand Store 예시
+import { create } from 'zustand';
+
+interface SearchState {
+  query: string;
+  results: Word[];
+  setQuery: (query: string) => void;
+}
+
+export const useSearchStore = create<SearchState>()((set) => ({
+  query: '',
+  results: [],
+  setQuery: (query) => set({ query }),
+}));
+
+// Selector로 최적화
+const query = useSearchStore((state) => state.query);
+```
+
+```typescript
+// Dexie React Hooks 예시
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from '@/lib/db/dexie';
+
+export function useWords() {
+  const words = useLiveQuery(
+    () => db.words.orderBy('createdAt').reverse().toArray(),
+    []
+  );
+  
+  return { words: words || [], isLoading: words === undefined };
+}
+```
+
+## 데이터베이스 (Dexie.js + IndexedDB)
+
+### 스키마 정의
+```typescript
+// lib/db/schema.ts
+import Dexie, { Table } from 'dexie';
+
+export interface Word {
+  id: string;
+  word: string;                // 清潔
+  reading: string;             // せいけつ
+  meanings: WordMeaning[];
+  kanji: string[];             // [清, 潔]
+  jlptLevel?: 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
+  groupIds: string[];
+  studyStatus: 'new' | 'learning' | 'mastered';
+  nextReview?: Date;
+  createdAt: Date;
+}
+
+export class AppDatabase extends Dexie {
+  words!: Table<Word, string>;
+  kanjiInfo!: Table<KanjiInfo, string>;
+  groups!: Table<Group, string>;
+
+  constructor() {
+    super('JapaneseVocabDB');
+    this.version(1).stores({
+      words: 'id, word, *kanji, *groupIds, studyStatus, nextReview',
+      kanjiInfo: 'id, character, radical, *readings.on',
+      groups: 'id, type, criterion',
+    });
+  }
+}
+
+export const db = new AppDatabase();
+```
+
+### 오프라인 우선 전략
+- 앱 번들에 JMdict/KanjiDic2 데이터 포함
+- 초기 로딩 시 IndexedDB에 저장
+- 네트워크 없이도 기본 기능 사용 가능
+
+## 디자인 시스템
+
+### 색상 (Tailwind CSS)
+```typescript
+// tailwind.config.ts
+export default {
+  theme: {
+    extend: {
+      colors: {
+        // Point Colors
+        'sky-blue': '#8fc1e3',
+        'coral-pink': '#e16a84',
+        'cream-yellow': '#fadfa4',
+        
+        // Neutral Colors (다이어리 종이 질감)
+        'ivory': '#f5f4ec',        // 메인 배경
+        'cream-tint': '#fefcf8',   // 카드 배경
+        'light-beige': '#e8e6df',  // 보더
+        
+        // Semantic
+        'text': '#4a4a48',
+        'text-light': '#737371',
+      },
+    },
+  },
+};
+```
+
+### 타이포그래피
+```css
+/* 다이어리 느낌의 작은 폰트 */
+--font-primary: 'KoddiUD OnGothic', sans-serif;
+--font-japanese: 'BIZ UDGothic', 'Hiragino Sans', sans-serif;
+
+--font-size-display: 28px;
+--font-size-h1: 22px;
+--font-size-body: 14px;  /* 기본 */
+--font-size-small: 12px;
+```
+
+### 컴포넌트 스타일
+- **최소 그림자** (다이어리는 평면적)
+- **얇은 보더** (0.5px~1px)
+- **부드러운 라운드** (4px~6px)
+- **충분한 여백** (12px~24px)
+
+```typescript
+// Button 예시
+const buttonVariants = cva(
+  'inline-flex items-center justify-center rounded-lg transition-all',
+  {
+    variants: {
+      variant: {
+        primary: 'bg-sky-blue text-white hover:bg-sky-blue/90',
+        secondary: 'border border-border bg-transparent hover:bg-sky-tint',
+      },
+      size: {
+        sm: 'h-7 px-3 text-xs',
+        md: 'h-9 px-4 text-sm',
+        lg: 'h-11 px-6 text-base',
+      },
+    },
+  }
+);
+```
+
+## 핵심 기능 구현 지침
+
+### 한자 자동 그룹화 (차별화 핵심)
+
+**우선순위 (MVP)**:
+1. **부수 기반** (氵물 수변: 清, 河, 海, 湖...)
+2. **구성 요소 기반** (青 포함: 清, 晴, 静, 請...)
+3. **음독 기반** (セイ: 清, 正, 生, 成...)
+
+```typescript
+// features/kanji/utils/radicalAnalyzer.ts
+export interface RadicalGroup {
+  radical: string;        // 氵
+  radicalName: string;    // 물 수변
+  kanji: string[];
+  count: number;
+}
+
+export async function analyzeByRadical(
+  kanjiList: string[]
+): Promise<RadicalGroup[]> {
+  const kanjiInfoList = await db.kanjiInfo
+    .where('character')
+    .anyOf(kanjiList)
+    .toArray();
+  
+  // 부수별 그룹화 로직
+  // 2개 이상인 그룹만 반환
+}
+```
+
+### 검색 & 저장 플로우
+1. 사용자 검색 (히라가나/한자)
+2. JMdict 데이터 검색
+3. 결과 표시 (후리가나, 뜻, 예문)
+4. 저장 버튼 → 한자 분석 → 그룹 추천
+5. IndexedDB에 저장
+
+### 학습 모드 (플래시카드)
+- 3D 플립 애니메이션 (Framer Motion)
+- 키보드 단축키 (`Space`: 뒤집기, `1-4`: 난이도)
+- 간격 반복 학습 알고리즘 (Phase 2)
+
+## 성능 최적화
+
+### 렌더링 최적화
+```typescript
+// React.memo로 불필요한 리렌더링 방지
+export const WordCard = memo(function WordCard({ word }: Props) {
+  // ...
+}, (prev, next) => {
+  return prev.word.id === next.word.id &&
+         prev.word.updatedAt === next.word.updatedAt;
+});
+
+// Zustand selector
+const sidebarCollapsed = useAppStore(state => state.sidebarCollapsed);
+// 전체 상태 구독 X
+```
+
+### 코드 스플리팅
+- TanStack Router가 자동으로 처리
+- 추가 최적화: `lazy()` + `Suspense`
+
+### 데이터 최적화
+- 검색 결과 캐싱
+- IndexedDB 인덱싱 활용
+- debounce로 검색 빈도 제한 (300ms)
+
+## 금지 사항 (Anti-patterns)
+
+### 절대 사용 금지
+- ❌ 클래스 컴포넌트
+- ❌ `any` 타입 (unknown 사용)
+- ❌ Context API (Zustand 사용)
+- ❌ `enum` (const object나 union type 사용)
+
+### 최소화해야 할 것
+- ⚠️ `useEffect` (가능하면 이벤트 핸들러나 라이브러리 활용)
+- ⚠️ 복잡한 상태 로직 (단순하게 유지)
+- ⚠️ prop drilling (Zustand로 해결)
+
+```typescript
+// ❌ Bad
+enum Status {
+  New = 'new',
+  Learning = 'learning'
+}
+
+// ✅ Good
+const STATUS = {
+  NEW: 'new',
+  LEARNING: 'learning',
+} as const;
+
+type Status = typeof STATUS[keyof typeof STATUS];
+```
+
+## 개발 워크플로우
+
+### MVP (1-2일)
+**Day 1**: 검색 + 저장 + 기본 UI
+**Day 2**: 한자 그룹화 + 학습 모드
+
+**초점**: 데스크톱 레이아웃만 (1200px 기준)
+
+### Phase 2 (1주)
+- 반응형 레이아웃 (모바일/태블릿)
+- 간격 반복 학습 알고리즘
+- 데이터 내보내기/가져오기
+
+### 코드 품질
+```bash
+# 개발 전 확인
+npm run type-check  # TypeScript 에러 확인
+npm run lint        # ESLint 검사
+npm run format      # Prettier 포맷팅
+```
+
+## 접근성 & 사용성
+
+### 키보드 단축키 (데스크톱)
+- `Ctrl/Cmd + K`: 검색 포커스
+- `Ctrl/Cmd + L`: 학습 시작
+- `Space`: 카드 뒤집기
+- `1-4`: 난이도 평가
+- `Esc`: 모달 닫기
+
+### 접근성 기준
+- WCAG AA 준수 (색상 대비 4.5:1 이상)
+- 모든 인터랙티브 요소 Tab 접근 가능
+- 의미 있는 `aria-label` 제공
+- 터치 타겟 최소 44x44px
+
+## 데이터 출처 & 라이선스
+
+### 사전 데이터
+- **JMdict**: CC BY-SA 3.0 (214,000+ 단어)
+- **KanjiDic2**: CC BY-SA 4.0 (13,000+ 한자)
+- **Tatoeba**: CC BY 2.0 (예문)
+
+### 출처 표기 (필수)
+앱 하단 푸터에 명시:
+```
+이 서비스는 JMdict 및 KanjiDic2 사전 파일을 사용합니다.
+Copyright (C) 2024 Electronic Dictionary Research and Development Group
+```
+
+## 예시 코드 템플릿
+
+### 컴포넌트
+```typescript
+import { memo } from 'react';
+import { cn } from '@/lib/utils/cn';
+
+export interface ComponentProps {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const Component = memo(function Component({ 
+  className,
+  children 
+}: ComponentProps) {
+  return (
+    <div className={cn('base-classes', className)}>
+      {children}
+    </div>
+  );
+});
+```
+
+### Custom Hook
+```typescript
+import { useState, useCallback } from 'react';
+
+export function useFeature() {
+  const [state, setState] = useState(initialState);
+  
+  const action = useCallback(() => {
+    // logic
+  }, []);
+  
+  return { state, action };
+}
+```
+
+## 참고 문서
+
+프로젝트 루트의 `docs/` 폴더에서 상세 정보 확인:
+- `service-plan.md`: 서비스 기획안
+- `code-architecture.md`: 아키텍처 상세
+- `design-guide.md`: 디자인 시스템 전체
+- `wireframes.md`: 화면 구조
+
+---
+
+**버전**: 1.0
+**최종 업데이트**: 2026-01-22
