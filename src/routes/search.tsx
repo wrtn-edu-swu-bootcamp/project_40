@@ -1,127 +1,91 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { SearchBar } from '@/components/molecules/SearchBar';
-import { Button } from '@/components/atoms/Button';
-import { Badge } from '@/components/atoms/Badge';
+import { ComponentDisplay } from '@/components/molecules/ComponentDisplay';
+import { KanjiListSection } from '@/components/organisms/KanjiListSection';
 import { useSearch } from '@/features/search/hooks/useSearch';
-import { useWords } from '@/features/words/hooks/useWords';
-import { useGroups } from '@/features/groups/hooks/useGroups';
-import { suggestGroups } from '@/features/kanji/utils/groupSuggester';
-import { addWordToGroup, updateWord, getWordByExactMatch } from '@/lib/db/queries';
-import type { GroupSuggestion } from '@/types/group';
-import type { DictionaryEntry } from '@/lib/data/sample-words';
+import { useBookmarks } from '@/features/bookmarks/hooks/useBookmarks';
+import { useAutoGroup } from '@/features/groups/hooks/useAutoGroup';
+import { extractKanji } from '@/features/kanji/utils/kanjiExtractor';
+import { getKanjiFromDictionary, getMultipleKanjiFromDictionary } from '@/lib/data/kanji-dictionary';
+import { findKanjiByComponent } from '@/features/kanji/utils/componentAnalyzer';
+import type { KanjiInfo } from '@/types/kanji';
 
 export const Route = createFileRoute('/search')({
   component: SearchPage,
 });
 
 function SearchPage() {
-  const { results, selectedIndex, selectedResult, isSearching, search, setSelectedIndex } = useSearch();
-  const { createWord } = useWords();
-  const { createGroup } = useGroups();
-  const [isSaving, setIsSaving] = useState(false);
-  const [showGroupSuggestions, setShowGroupSuggestions] = useState(false);
-  const [groupSuggestions, setGroupSuggestions] = useState<GroupSuggestion[]>([]);
-  const [selectedGroupIndices, setSelectedGroupIndices] = useState<Set<number>>(new Set());
-  const [savedWordId, setSavedWordId] = useState<string | null>(null);
-  
-  async function handleSave(entry: DictionaryEntry) {
-    setIsSaving(true);
+  const { results, isSearching, search } = useSearch();
+  const { bookmarks, toggleBookmark } = useBookmarks();
+  const { autoSaveComponentGroup } = useAutoGroup();
+
+  // 상태
+  const [selectedResult, setSelectedResult] = useState<typeof results[0] | null>(null);
+  const [selectedKanji, setSelectedKanji] = useState<string | null>(null);
+  const [selectedComponent, setSelectedComponent] = useState<string | null>(null);
+  const [componentKanjiList, setComponentKanjiList] = useState<KanjiInfo[]>([]);
+  const [autoSavedComponents, setAutoSavedComponents] = useState<Set<string>>(new Set());
+
+  // 북마크된 한자 문자들
+  const bookmarkedCharacters = bookmarks.map((b) => b.character);
+
+  // 검색 결과 선택
+  function handleResultSelect(result: typeof results[0]) {
+    setSelectedResult(result);
+    setSelectedKanji(null);
+    setSelectedComponent(null);
+    setComponentKanjiList([]);
+  }
+
+  // 한자 클릭 (섹션 2 표시)
+  function handleKanjiClick(character: string) {
+    setSelectedKanji(character);
+    setSelectedComponent(null);
+    setComponentKanjiList([]);
+  }
+
+  // 구성 요소/부수 클릭 (섹션 3 표시 + 자동 그룹 저장)
+  async function handleComponentClick(component: string) {
+    setSelectedComponent(component);
+
+    // 해당 구성 요소를 포함하는 한자들 찾기
+    const kanjiCharacters = findKanjiByComponent(component);
+    const kanjiInfoList = getMultipleKanjiFromDictionary(kanjiCharacters);
+    setComponentKanjiList(kanjiInfoList);
+
+    // 자동 그룹 저장 (이미 저장된 요소가 아니면)
+    if (!autoSavedComponents.has(component)) {
+      try {
+        await autoSaveComponentGroup(component, kanjiCharacters);
+        setAutoSavedComponents((prev) => new Set(prev).add(component));
+      } catch (error) {
+        console.error('자동 그룹 저장 실패:', error);
+      }
+    }
+  }
+
+  // 북마크 토글
+  async function handleBookmarkToggle(character: string) {
+    const kanjiInfo = getKanjiFromDictionary(character);
+    if (!kanjiInfo) return;
+
     try {
-      // 중복 체크
-      const existingWord = await getWordByExactMatch(entry.word);
-      if (existingWord) {
-        alert('이미 저장된 단어입니다.');
-        setIsSaving(false);
-        return;
-      }
-      
-      // 단어 저장
-      const word = await createWord({
-        word: entry.word,
-        reading: entry.reading,
-        meanings: entry.meanings,
-        jlptLevel: entry.jlptLevel,
-      });
-      
-      setSavedWordId(word.id);
-      
-      // 그룹 추천 생성
-      const suggestions = await suggestGroups(word.word);
-      
-      if (suggestions.length > 0) {
-        setGroupSuggestions(suggestions);
-        // 기본적으로 모든 그룹 선택
-        setSelectedGroupIndices(new Set(suggestions.map((_, idx) => idx)));
-        setShowGroupSuggestions(true);
-      } else {
-        alert('단어가 저장되었습니다!');
-      }
+      await toggleBookmark(character, kanjiInfo, selectedResult?.word);
     } catch (error) {
-      console.error('단어 저장 중 오류:', error);
-      alert('단어 저장에 실패했습니다.');
-    } finally {
-      setIsSaving(false);
+      console.error('북마크 토글 실패:', error);
     }
   }
-  
-  function toggleGroupSelection(index: number) {
-    const newSelection = new Set(selectedGroupIndices);
-    if (newSelection.has(index)) {
-      newSelection.delete(index);
-    } else {
-      newSelection.add(index);
-    }
-    setSelectedGroupIndices(newSelection);
-  }
-  
-  async function confirmGroupSuggestions() {
-    if (!savedWordId) return;
-    
-    setIsSaving(true);
-    try {
-      const createdGroupIds: string[] = [];
-      
-      // 선택된 그룹들을 실제로 생성하고 단어 연결
-      for (const index of Array.from(selectedGroupIndices)) {
-        const suggestion = groupSuggestions[index];
-        
-        // 그룹 생성 (중복 체크는 createGroup에서 처리)
-        const group = await createGroup({
-          type: suggestion.type,
-          name: suggestion.name,
-          criterion: suggestion.criterion,
-          wordIds: [savedWordId],
-        });
-        
-        createdGroupIds.push(group.id);
-        
-        // 단어를 그룹에 연결
-        await addWordToGroup(group.id, savedWordId);
-      }
-      
-      // 단어의 groupIds 업데이트
-      await updateWord(savedWordId, {
-        groupIds: createdGroupIds,
-      });
-      
-      alert(`단어가 저장되었고, ${selectedGroupIndices.size}개의 그룹에 추가되었습니다!`);
-      closeGroupSuggestions();
-    } catch (error) {
-      console.error('그룹 생성 중 오류:', error);
-      alert('그룹 생성에 실패했습니다.');
-    } finally {
-      setIsSaving(false);
-    }
-  }
-  
-  function closeGroupSuggestions() {
-    setShowGroupSuggestions(false);
-    setGroupSuggestions([]);
-    setSelectedGroupIndices(new Set());
-    setSavedWordId(null);
-  }
-  
+
+  // 선택된 한자의 구성 요소 정보
+  const selectedKanjiComponents: KanjiInfo[] = selectedKanji
+    ? (() => {
+        const kanjiInfo = getKanjiFromDictionary(selectedKanji);
+        if (!kanjiInfo || !kanjiInfo.components) return [];
+        return getMultipleKanjiFromDictionary(kanjiInfo.components);
+      })()
+    : [];
+
   return (
     <div className="min-h-screen bg-[var(--color-ivory)] p-8">
       <div className="max-w-7xl mx-auto">
@@ -131,203 +95,148 @@ function SearchPage() {
             단어 검색
           </h1>
           <p className="text-[var(--font-size-body)] text-[var(--color-text-light)]">
-            한국어, 히라가나, 한자, 로마자 모두 검색 가능합니다 (214,000+ 단어)
+            한자로 이루어진 단어를 검색하고 구성 요소를 분석하세요
           </p>
         </div>
-        
+
         {/* 검색바 */}
         <SearchBar onSearch={search} className="mb-8" />
-        
-        {/* 2단 레이아웃 */}
-        <div className="grid grid-cols-2 gap-6">
-          {/* 좌측: 검색 결과 리스트 */}
-          <div className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border)] p-5 h-[650px] overflow-y-auto shadow-[var(--shadow-subtle)]">
-            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-4">
-              검색 결과 ({results.length})
-            </h2>
-            
-            {isSearching && (
-              <div className="text-center text-[var(--color-text-light)] py-8">
-                검색 중...
-              </div>
-            )}
-            
-            {!isSearching && results.length === 0 && (
-              <div className="text-center text-[var(--color-text-light)] py-8">
-                검색 결과가 없습니다
-              </div>
-            )}
-            
-            <div className="space-y-3">
-              {results.map((entry, index) => (
-                <div
+
+        {/* 검색 중 */}
+        {isSearching && (
+          <div className="text-center text-[var(--color-text-light)] py-8">
+            검색 중...
+          </div>
+        )}
+
+        {/* 검색 결과가 없을 때 */}
+        {!isSearching && results.length === 0 && (
+          <div className="text-center text-[var(--color-text-light)] py-8">
+            검색 결과가 없습니다
+          </div>
+        )}
+
+        {/* 검색 결과가 있을 때 */}
+        {!isSearching && results.length > 0 && (
+          <div className="space-y-8">
+            {/* 검색 결과 목록 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {results.map((result, index) => (
+                <button
                   key={index}
-                  className={`p-4 rounded-[var(--radius-md)] border-[var(--border-thin)] transition-all duration-150 ${
-                    selectedIndex === index
+                  onClick={() => handleResultSelect(result)}
+                  className={`p-4 rounded-[var(--radius-md)] border text-left transition-all duration-150 ${
+                    selectedResult === result
                       ? 'border-[var(--color-sky-blue)] bg-[var(--color-sky-tint)] shadow-[var(--shadow-soft)]'
-                      : 'border-[var(--color-border)] bg-[var(--color-cream-tint)] hover:border-[var(--color-medium-gray)] hover:shadow-[var(--shadow-subtle)]'
+                      : 'border-[var(--color-border)] bg-white hover:border-[var(--color-medium-gray)] hover:shadow-[var(--shadow-subtle)]'
                   }`}
                 >
-                  <div 
-                    className="cursor-pointer"
-                    onClick={() => setSelectedIndex(index)}
-                  >
-                    <div className="flex items-baseline gap-2 mb-1.5">
-                      <span className="text-[var(--font-size-h2)] font-medium text-[var(--color-text)] japanese">
-                        {entry.word}
-                      </span>
-                      <span className="text-[var(--font-size-small)] text-[var(--color-text-light)] japanese">
-                        {entry.reading}
-                      </span>
-                      {entry.jlptLevel && (
-                        <Badge variant="jlpt" jlptLevel={entry.jlptLevel} className="ml-auto">
-                          {entry.jlptLevel}
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="text-[var(--font-size-body)] text-[var(--color-text)] leading-relaxed">
-                      {entry.meanings[0]?.definitions[0]}
-                    </div>
+                  <div className="flex items-baseline gap-2 mb-2">
+                    <span className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] japanese">
+                      {result.word}
+                    </span>
+                    <span className="text-[var(--font-size-small)] text-[var(--color-text-light)] japanese">
+                      {result.reading}
+                    </span>
                   </div>
-                  <div className="mt-3 pt-3 border-t border-[var(--color-border)]">
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSave(entry);
-                      }}
-                      disabled={isSaving}
-                      size="sm"
-                      variant="secondary"
-                      className="w-full"
-                    >
-                      💾 저장
-                    </Button>
+                  <div className="text-[var(--font-size-small)] text-[var(--color-text)] line-clamp-2">
+                    {result.meanings[0]?.definitions[0]}
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
-          
-          {/* 우측: 선택한 단어 상세 */}
-          <div className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border)] p-6 h-[650px] overflow-y-auto shadow-[var(--shadow-subtle)]">
-            {selectedResult ? (
-              <>
-                <div className="mb-6">
-                  <div className="flex items-baseline gap-3 mb-4">
-                    <h2 className="text-[2rem] font-semibold text-[var(--color-text)] japanese">
-                      {selectedResult.word}
-                    </h2>
-                    <span className="text-[1.25rem] text-[var(--color-text-light)] japanese">
-                      {selectedResult.reading}
+        )}
+
+        {/* 섹션 1: 선택한 단어 상세 */}
+        {selectedResult && (
+          <div className="mt-8 p-6 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white shadow-[var(--shadow-subtle)]">
+            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-4">
+              검색된 단어
+            </h2>
+
+            <div className="mb-4">
+              <div className="flex items-baseline gap-3 mb-3">
+                <span className="text-[2rem] font-bold text-[var(--color-text)] japanese">
+                  {selectedResult.word}
+                </span>
+                <span className="text-[1.25rem] text-[var(--color-text-light)] japanese">
+                  {selectedResult.reading}
+                </span>
+              </div>
+
+              {/* 뜻 */}
+              <div className="mb-4">
+                {selectedResult.meanings.map((meaning: any, idx: number) => (
+                  <div key={idx} className="mb-2">
+                    <span className="text-[var(--font-size-small)] text-[var(--color-text-lighter)] font-medium">
+                      [{meaning.partOfSpeech}]{' '}
+                    </span>
+                    <span className="text-[var(--font-size-body)] text-[var(--color-text)]">
+                      {meaning.definitions.join(', ')}
                     </span>
                   </div>
-                  
-                  {selectedResult.jlptLevel && (
-                    <Badge variant="jlpt" jlptLevel={selectedResult.jlptLevel}>
-                      {selectedResult.jlptLevel}
-                    </Badge>
-                  )}
-                </div>
-                
-                {/* 뜻 */}
-                <div className="mb-6">
-                  <h3 className="text-[var(--font-size-body)] font-semibold text-[var(--color-text)] mb-3">
-                    의미
-                  </h3>
-                  {selectedResult.meanings.map((meaning, idx) => (
-                    <div key={idx} className="mb-4 p-3 rounded-[var(--radius-md)] bg-[var(--color-cream-tint)]">
-                      <div className="text-[var(--font-size-small)] text-[var(--color-text-lighter)] mb-2 font-medium">
-                        {meaning.partOfSpeech}
-                      </div>
-                      <ul className="list-disc list-inside space-y-1.5">
-                        {meaning.definitions.map((def, defIdx) => (
-                          <li key={defIdx} className="text-[var(--font-size-body)] text-[var(--color-text)] leading-relaxed">
-                            {def}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-                
-                {/* 저장 버튼 */}
-                <Button
-                  onClick={() => handleSave(selectedResult)}
-                  disabled={isSaving}
-                  className="w-full"
-                >
-                  {isSaving ? '저장 중...' : '내 단어장에 저장'}
-                </Button>
-              </>
-            ) : (
-              <div className="flex items-center justify-center h-full text-[var(--color-text-light)]">
-                단어를 선택하세요
-              </div>
-            )}
-          </div>
-        </div>
-        
-        {/* 그룹 추천 모달 */}
-        {showGroupSuggestions && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
-              <h2 className="text-xl font-bold text-[var(--color-text)] mb-4">
-                그룹 추천
-              </h2>
-              <p className="text-sm text-[var(--color-text-light)] mb-4">
-                이 단어와 관련된 그룹을 발견했습니다! 추가할 그룹을 선택하세요.
-              </p>
-              
-              <div className="space-y-3 mb-6">
-                {groupSuggestions.map((suggestion, idx) => (
-                  <label
-                    key={idx}
-                    className={`block p-3 rounded-lg border cursor-pointer transition-all ${
-                      selectedGroupIndices.has(idx)
-                        ? 'border-[var(--color-sky-blue)] bg-[var(--color-sky-tint)]'
-                        : 'border-[var(--color-border)] bg-[var(--color-cream-tint)] hover:border-[var(--color-medium-gray)]'
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <input
-                        type="checkbox"
-                        checked={selectedGroupIndices.has(idx)}
-                        onChange={() => toggleGroupSelection(idx)}
-                        className="mt-1 w-4 h-4 text-[var(--color-sky-blue)] rounded border-gray-300 focus:ring-[var(--color-sky-blue)]"
-                      />
-                      <div className="flex-1">
-                        <div className="font-bold text-[var(--color-text)] mb-1 japanese">
-                          {suggestion.name}
-                        </div>
-                        <div className="text-sm text-[var(--color-text-light)] mb-2">
-                          관련 한자: {suggestion.relatedWords.join(', ')}
-                        </div>
-                        <Badge>{suggestion.count}개 한자</Badge>
-                      </div>
-                    </div>
-                  </label>
                 ))}
               </div>
-              
-              <div className="flex gap-3">
-                <Button
-                  onClick={closeGroupSuggestions}
-                  variant="secondary"
-                  className="flex-1"
-                  disabled={isSaving}
-                >
-                  그룹 없이 저장
-                </Button>
-                <Button
-                  onClick={confirmGroupSuggestions}
-                  variant="secondary"
-                  className="flex-1"
-                  disabled={isSaving || selectedGroupIndices.size === 0}
-                >
-                  {isSaving ? '저장 중...' : selectedGroupIndices.size === 0 ? '그룹을 선택하세요' : `${selectedGroupIndices.size}개 그룹에 추가`}
-                </Button>
+
+              {/* 클릭 가능한 한자들 */}
+              <div>
+                <span className="text-[var(--font-size-small)] text-[var(--color-text-lighter)] font-semibold block mb-2">
+                  한자를 클릭하여 구성 요소 확인:
+                </span>
+                <div className="flex gap-2">
+                  {extractKanji(selectedResult.word).map((kanji) => (
+                    <button
+                      key={kanji}
+                      onClick={() => handleKanjiClick(kanji)}
+                      className={`w-14 h-14 rounded-[var(--radius-md)] border-2 transition-all duration-150 ${
+                        selectedKanji === kanji
+                          ? 'border-[var(--color-sky-blue)] bg-[var(--color-sky-tint)] shadow-[var(--shadow-soft)]'
+                          : 'border-[var(--color-border)] bg-[var(--color-cream-tint)] hover:border-[var(--color-sky-blue)]'
+                      }`}
+                    >
+                      <span className="text-[1.5rem] font-bold japanese">{kanji}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* 섹션 2: 선택한 한자의 구성 요소 */}
+        {selectedKanji && (
+          <div className="mt-8 p-6 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white shadow-[var(--shadow-subtle)]">
+            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-4">
+              선택한 한자의 구성 요소
+            </h2>
+
+            <div className="mb-4">
+              <span className="text-[2rem] font-bold text-[var(--color-text)] japanese">
+                {selectedKanji}
+              </span>
+              <span className="text-[var(--font-size-body)] text-[var(--color-text-light)] ml-3">
+                = {selectedKanjiComponents.map((c) => c.character).join(' + ')}
+              </span>
+            </div>
+
+            <ComponentDisplay
+              components={selectedKanjiComponents}
+              onComponentClick={handleComponentClick}
+            />
+          </div>
+        )}
+
+        {/* 섹션 3: 선택한 요소를 포함한 한자들 */}
+        {selectedComponent && componentKanjiList.length > 0 && (
+          <div className="mt-8 p-6 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white shadow-[var(--shadow-subtle)]">
+            <KanjiListSection
+              title={`${selectedComponent} 포함 한자`}
+              kanjiList={componentKanjiList}
+              bookmarkedCharacters={bookmarkedCharacters}
+              onBookmarkToggle={handleBookmarkToggle}
+              autoSaved={autoSavedComponents.has(selectedComponent)}
+            />
           </div>
         )}
       </div>

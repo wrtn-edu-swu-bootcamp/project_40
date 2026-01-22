@@ -40,7 +40,7 @@ export const GroupCard = memo(function GroupCard({
       </div>
       
       <div className="text-sm text-[var(--color-text-light)]">
-        {wordCount !== undefined ? `${wordCount}개 단어` : `${group.wordIds.length}개 단어`}
+        {wordCount !== undefined ? `${wordCount}개 한자` : `${group.kanjiCharacters.length}개 한자`}
       </div>
     </div>
   );

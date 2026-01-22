@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { DictionaryEntry } from '@/lib/data/sample-words';
+import type { DictionaryEntry } from '@/types/word';
 
 interface SearchState {
   query: string;

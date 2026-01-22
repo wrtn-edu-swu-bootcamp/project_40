@@ -1,5 +1,5 @@
 import type { GroupSuggestion } from '@/types/group';
-import { extractKanji, extractKanjiFromWords } from './kanjiExtractor';
+import { extractKanji } from './kanjiExtractor';
 import { analyzeByRadical, analyzeByRadicalWithExisting } from './radicalAnalyzer';
 import { analyzeByComponent, analyzeByComponentWithExisting } from './componentAnalyzer';
 import { analyzeByReading, analyzeByReadingWithExisting } from './readingAnalyzer';
@@ -58,7 +58,7 @@ export async function suggestGroups(word: string): Promise<GroupSuggestion[]> {
     .slice(0, 8);
 }
 
-// 기존 저장된 단어들과 함께 그룹 추천 생성
+// 기존 저장된 북마크들과 함께 그룹 추천 생성
 export async function suggestGroupsWithExisting(word: string): Promise<GroupSuggestion[]> {
   // 한자 추출
   const newKanjiList = extractKanji(word);
@@ -67,15 +67,13 @@ export async function suggestGroupsWithExisting(word: string): Promise<GroupSugg
     return [];
   }
   
-  // DB에서 기존 저장된 모든 단어 조회
-  const existingWords = await db.words.toArray();
-  const existingKanjiList = extractKanjiFromWords(
-    existingWords.map((w) => w.word)
-  );
+  // DB에서 기존 저장된 모든 북마크 조회
+  const existingBookmarks = await db.bookmarks.toArray();
+  const existingKanjiList = existingBookmarks.map((b) => b.character);
   
   const suggestions: GroupSuggestion[] = [];
   
-  // 1. 부수 기반 그룹 추천 (기존 단어들의 한자 포함)
+  // 1. 부수 기반 그룹 추천 (기존 북마크들의 한자 포함)
   const radicalGroups = await analyzeByRadicalWithExisting(newKanjiList, existingKanjiList);
   for (const group of radicalGroups) {
     suggestions.push({

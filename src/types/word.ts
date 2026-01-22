@@ -49,3 +49,11 @@ export interface CreateWordInput {
   meanings: WordMeaning[];
   jlptLevel?: JlptLevel;
 }
+
+// 사전 검색 결과 (API 응답)
+export interface DictionaryEntry {
+  word: string;
+  reading: string;
+  meanings: WordMeaning[];
+  jlptLevel?: JlptLevel;
+}

@@ -1,5 +1,4 @@
-import type { DictionaryEntry } from '@/lib/data/sample-words';
-import type { WordMeaning } from '@/types/word';
+import type { DictionaryEntry, WordMeaning } from '@/types/word';
 
 // Jisho.org API 응답 타입
 interface JishoApiResponse {

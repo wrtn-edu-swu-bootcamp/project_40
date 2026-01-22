@@ -1,114 +1,56 @@
 import { db } from './schema';
-import type { Word, StudyStatus } from '@/types/word';
-import type { Group, GroupType } from '@/types/group';
-import type { KanjiInfo } from '@/types/kanji';
+import type { Bookmark } from '@/types/bookmark';
+import type { Group, GroupKanji, GroupType } from '@/types/group';
 
-// ===== Word 쿼리 =====
+// ===== Bookmark 쿼리 =====
 
-// 모든 단어 조회 (최신순)
-export async function getAllWords(): Promise<Word[]> {
-  return await db.words.orderBy('createdAt').reverse().toArray();
+// 모든 북마크 조회 (최신순)
+export async function getAllBookmarks(): Promise<Bookmark[]> {
+  return await db.bookmarks.orderBy('createdAt').reverse().toArray();
 }
 
-// ID로 단어 조회
-export async function getWordById(id: string): Promise<Word | undefined> {
-  return await db.words.get(id);
+// ID로 북마크 조회
+export async function getBookmarkById(id: string): Promise<Bookmark | undefined> {
+  return await db.bookmarks.get(id);
 }
 
-// 단어 검색 (단어 또는 읽기로)
-export async function searchWords(query: string): Promise<Word[]> {
-  const normalizedQuery = query.toLowerCase();
-  
-  return await db.words
-    .filter((word) => {
-      return (
-        word.word.toLowerCase().includes(normalizedQuery) ||
-        word.reading.toLowerCase().includes(normalizedQuery)
-      );
-    })
-    .toArray();
+// 한자 문자로 북마크 조회 (중복 체크용)
+export async function getBookmarkByCharacter(character: string): Promise<Bookmark | undefined> {
+  return await db.bookmarks.where('character').equals(character).first();
 }
 
-// 단어 중복 체크 (정확히 일치하는 단어 찾기)
-export async function getWordByExactMatch(word: string): Promise<Word | undefined> {
-  return await db.words.where('word').equals(word).first();
+// 북마크 여부 확인
+export async function isBookmarked(character: string): Promise<boolean> {
+  const bookmark = await getBookmarkByCharacter(character);
+  return bookmark !== undefined;
 }
 
-// 학습 상태별 단어 조회
-export async function getWordsByStatus(status: StudyStatus): Promise<Word[]> {
-  return await db.words.where('studyStatus').equals(status).toArray();
+// 북마크 추가
+export async function addBookmark(bookmark: Bookmark): Promise<string> {
+  // 중복 체크
+  const existing = await getBookmarkByCharacter(bookmark.character);
+  if (existing) {
+    throw new Error('이미 북마크된 한자입니다.');
+  }
+  return await db.bookmarks.add(bookmark);
 }
 
-// 특정 한자를 포함하는 단어 조회
-export async function getWordsByKanji(kanji: string): Promise<Word[]> {
-  return await db.words.where('kanji').equals(kanji).toArray();
+// 북마크 삭제
+export async function deleteBookmark(id: string): Promise<void> {
+  await db.bookmarks.delete(id);
 }
 
-// 복습 대기 단어 조회 (오늘 날짜 기준)
-export async function getWordsForReview(): Promise<Word[]> {
-  const today = new Date();
-  today.setHours(23, 59, 59, 999); // 오늘 끝까지
-  
-  return await db.words
-    .where('nextReview')
-    .belowOrEqual(today)
-    .and((word) => word.studyStatus !== 'mastered')
-    .toArray();
-}
-
-// 단어 추가
-export async function addWord(word: Word): Promise<string> {
-  return await db.words.add(word);
-}
-
-// 단어 업데이트
-export async function updateWord(id: string, changes: Partial<Word>): Promise<number> {
-  return await db.words.update(id, {
-    ...changes,
-    updatedAt: new Date(),
-  });
-}
-
-// 단어 삭제
-export async function deleteWord(id: string): Promise<void> {
-  await db.words.delete(id);
-}
-
-// ===== KanjiInfo 쿼리 =====
-
-// 한자 정보 조회
-export async function getKanjiInfo(character: string): Promise<KanjiInfo | undefined> {
-  return await db.kanjiInfo.get(character);
-}
-
-// 여러 한자 정보 조회
-export async function getMultipleKanjiInfo(characters: string[]): Promise<KanjiInfo[]> {
-  return await db.kanjiInfo.where('id').anyOf(characters).toArray();
-}
-
-// 부수별 한자 조회
-export async function getKanjiByRadical(radical: string): Promise<KanjiInfo[]> {
-  return await db.kanjiInfo.where('radical').equals(radical).toArray();
-}
-
-// 음독별 한자 조회
-export async function getKanjiByReading(reading: string): Promise<KanjiInfo[]> {
-  return await db.kanjiInfo.where('readings.on').equals(reading).toArray();
-}
-
-// 한자 정보 추가
-export async function addKanjiInfo(kanjiInfo: KanjiInfo): Promise<string> {
-  return await db.kanjiInfo.add(kanjiInfo);
-}
-
-// 한자 정보 일괄 추가
-export async function bulkAddKanjiInfo(kanjiInfoList: KanjiInfo[]): Promise<string> {
-  return await db.kanjiInfo.bulkAdd(kanjiInfoList, { allKeys: true }) as unknown as string;
+// 한자 문자로 북마크 삭제
+export async function deleteBookmarkByCharacter(character: string): Promise<void> {
+  const bookmark = await getBookmarkByCharacter(character);
+  if (bookmark) {
+    await db.bookmarks.delete(bookmark.id);
+  }
 }
 
 // ===== Group 쿼리 =====
 
-// 모든 그룹 조회
+// 모든 그룹 조회 (최신순)
 export async function getAllGroups(): Promise<Group[]> {
   return await db.groups.orderBy('createdAt').reverse().toArray();
 }
@@ -128,6 +70,18 @@ export async function getGroupByCriterion(criterion: string): Promise<Group | un
   return await db.groups.where('criterion').equals(criterion).first();
 }
 
+// 기준과 타입으로 그룹 조회 (더 정확한 중복 체크)
+export async function getGroupByCriterionAndType(
+  criterion: string,
+  type: GroupType
+): Promise<Group | undefined> {
+  return await db.groups
+    .where('criterion')
+    .equals(criterion)
+    .and((group) => group.type === type)
+    .first();
+}
+
 // 그룹 추가
 export async function addGroup(group: Group): Promise<string> {
   return await db.groups.add(group);
@@ -141,51 +95,76 @@ export async function updateGroup(id: string, changes: Partial<Group>): Promise<
   });
 }
 
-// 그룹에 단어 추가
-export async function addWordToGroup(groupId: string, wordId: string): Promise<void> {
+// 그룹에 한자 추가
+export async function addKanjiToGroup(groupId: string, character: string): Promise<void> {
   const group = await getGroupById(groupId);
-  if (group && !group.wordIds.includes(wordId)) {
+  if (group && !group.kanjiCharacters.includes(character)) {
     await updateGroup(groupId, {
-      wordIds: [...group.wordIds, wordId],
+      kanjiCharacters: [...group.kanjiCharacters, character],
+    });
+    
+    // groupKanji 테이블에도 추가
+    await db.groupKanji.add({
+      id: `${groupId}-${character}`,
+      groupId,
+      character,
+      createdAt: new Date(),
     });
   }
 }
 
-// 그룹에서 단어 제거
-export async function removeWordFromGroup(groupId: string, wordId: string): Promise<void> {
+// 그룹에서 한자 제거
+export async function removeKanjiFromGroup(groupId: string, character: string): Promise<void> {
   const group = await getGroupById(groupId);
   if (group) {
     await updateGroup(groupId, {
-      wordIds: group.wordIds.filter((id) => id !== wordId),
+      kanjiCharacters: group.kanjiCharacters.filter((c) => c !== character),
     });
+    
+    // groupKanji 테이블에서도 제거
+    await db.groupKanji.where({ groupId, character }).delete();
   }
 }
 
 // 그룹 삭제
 export async function deleteGroup(id: string): Promise<void> {
   await db.groups.delete(id);
+  // 관련 groupKanji 레코드도 삭제
+  await db.groupKanji.where('groupId').equals(id).delete();
+}
+
+// ===== GroupKanji 쿼리 =====
+
+// 그룹의 모든 한자 조회
+export async function getKanjiByGroupId(groupId: string): Promise<GroupKanji[]> {
+  return await db.groupKanji.where('groupId').equals(groupId).toArray();
+}
+
+// 한자가 속한 모든 그룹 조회
+export async function getGroupsByKanji(character: string): Promise<Group[]> {
+  const groupKanjiList = await db.groupKanji.where('character').equals(character).toArray();
+  const groupIds = groupKanjiList.map((gk) => gk.groupId);
+  
+  if (groupIds.length === 0) {
+    return [];
+  }
+  
+  return await db.groups.where('id').anyOf(groupIds).toArray();
 }
 
 // ===== 통계 쿼리 =====
 
-// 전체 단어 수
-export async function getTotalWordCount(): Promise<number> {
-  return await db.words.count();
+// 전체 북마크 수
+export async function getTotalBookmarkCount(): Promise<number> {
+  return await db.bookmarks.count();
 }
 
-// 학습 상태별 단어 수
-export async function getWordCountByStatus(status: StudyStatus): Promise<number> {
-  return await db.words.where('studyStatus').equals(status).count();
+// 전체 그룹 수
+export async function getTotalGroupCount(): Promise<number> {
+  return await db.groups.count();
 }
 
-// 오늘 복습할 단어 수
-export async function getTodayReviewCount(): Promise<number> {
-  const today = new Date();
-  today.setHours(23, 59, 59, 999);
-  
-  return await db.words
-    .where('nextReview')
-    .belowOrEqual(today)
-    .and((word) => word.studyStatus !== 'mastered')
-    .count();
+// 타입별 그룹 수
+export async function getGroupCountByType(type: GroupType): Promise<number> {
+  return await db.groups.where('type').equals(type).count();
 }

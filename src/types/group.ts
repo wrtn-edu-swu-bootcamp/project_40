@@ -14,7 +14,7 @@ export interface Group {
   type: GroupType; // 그룹 타입
   name: string; // 그룹 이름 (예: '氵(물 수변)', '青 포함', 'セイ 음독')
   criterion: string; // 그룹화 기준 (부수/구성요소/음독 문자)
-  wordIds: string[]; // 포함된 단어 ID 배열
+  kanjiCharacters: string[]; // 포함된 한자 문자 배열
   createdAt: Date; // 생성일
   updatedAt: Date; // 수정일
 }
@@ -24,7 +24,15 @@ export interface CreateGroupInput {
   type: GroupType;
   name: string;
   criterion: string;
-  wordIds: string[];
+  kanjiCharacters: string[];
+}
+
+// 그룹-한자 관계 (중간 테이블)
+export interface GroupKanji {
+  id: string; // UUID
+  groupId: string; // 그룹 ID
+  character: string; // 한자 문자
+  createdAt: Date; // 생성일
 }
 
 // 그룹 추천 결과

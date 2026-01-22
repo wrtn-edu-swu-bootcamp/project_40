@@ -2,7 +2,7 @@ import { memo, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/atoms/Button';
 import { cn } from '@/lib/utils/cn';
-import { downloadDataAsJSON, importDataFromFile } from '@/features/words/utils/dataExporter';
+import { downloadDataAsJSON, importDataFromFile } from '@/features/data/utils/dataExporter';
 
 export interface SidebarProps {
   className?: string;
@@ -34,7 +34,7 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
       try {
         const result = await importDataFromFile(file);
         if (result.success) {
-          alert(`데이터를 성공적으로 가져왔습니다!\n단어: ${result.wordsCount}개\n그룹: ${result.groupsCount}개`);
+          alert(`데이터를 성공적으로 가져왔습니다!\n북마크: ${result.bookmarksCount}개\n그룹: ${result.groupsCount}개`);
         } else {
           alert(`데이터 가져오기 실패: ${result.error}`);
         }
@@ -50,10 +50,9 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
   }
   
   const navItems = [
-    { to: '/', label: '대시보드' },
     { to: '/search', label: '단어 검색' },
-    { to: '/words', label: '내 단어장' },
     { to: '/groups', label: '한자 그룹' },
+    { to: '/bookmarks', label: '저장된 단어' },
     { to: '/study', label: '학습 모드' },
   ];
   

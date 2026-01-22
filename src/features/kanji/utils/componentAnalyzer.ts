@@ -1,4 +1,4 @@
-import type { ComponentGroup, KanjiInfo } from '@/types/kanji';
+import type { ComponentGroup } from '@/types/kanji';
 import { getMultipleKanjiFromDictionary, getAllKanjiFromDictionary } from '@/lib/data/kanji-dictionary';
 
 // 구성 요소 기반 한자 분석 (전체 한자 사전에서 같은 구성 요소를 가진 한자들을 찾음)
