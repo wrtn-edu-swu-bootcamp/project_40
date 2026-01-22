@@ -71,61 +71,61 @@ function StudyPage() {
   }
   
   return (
-    <div className="min-h-screen bg-[var(--color-ivory)] p-6">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen bg-[var(--color-ivory)]">
+      <div className="max-w-[900px] mx-auto">
         {/* 헤더 */}
-        <div className="mb-8 pb-6 border-b-[var(--border-base)] border-[var(--color-border)]">
+        <div className="px-12 py-8 border-b border-[var(--color-dark-charcoal)]">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-[var(--font-size-display)] font-semibold text-[var(--color-text)] tracking-tight">
+            <h1 className="text-[var(--font-size-h1)] font-medium text-[var(--color-text)] tracking-tight">
               학습 모드
             </h1>
-            <div className="text-[var(--font-size-body)] text-[var(--color-text-light)]">
+            <div className="text-[var(--font-size-small)] text-[var(--color-text-light)] tabular-nums">
               {currentIndex + 1} / {studyWords.length}
             </div>
           </div>
           
           {/* 진행률 바 */}
-          <div className="w-full h-2 bg-[var(--color-light-beige)] overflow-hidden border-[var(--border-thin)] border-[var(--color-border)]">
+          <div className="w-full h-[2px] bg-[var(--color-light-beige)]">
             <div
-              className="h-full bg-[var(--color-sky-blue)] transition-all duration-300"
+              className="h-full bg-[var(--color-dark-charcoal)] transition-all duration-300"
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
         
         {/* 플래시카드 */}
-        <Flashcard word={currentWord} className="mb-8" />
+        <div className="px-12 py-12">
+          <Flashcard word={currentWord} />
+        </div>
         
         {/* 컨트롤 */}
-        <div className="flex items-center justify-between gap-4 pt-6 border-t-[var(--border-base)] border-[var(--color-border)]">
-          <Button
-            variant="secondary"
+        <div className="grid grid-cols-3 border-t border-[var(--color-dark-charcoal)]">
+          <button
             onClick={handlePrevious}
             disabled={currentIndex === 0}
-            className="flex-1"
+            className="px-6 py-4 text-[var(--font-size-small)] text-[var(--color-text)] border-r border-[var(--color-light-beige)] hover:bg-[var(--color-warm-white)] transition-colors disabled:opacity-30"
           >
             ← 이전 (←)
-          </Button>
+          </button>
           
-          <div className="text-sm text-[var(--color-text-light)] text-center px-6 py-3 border-[var(--border-thin)] border-[var(--color-border)]">
+          <div className="px-6 py-4 text-[var(--font-size-tiny)] text-[var(--color-text-light)] text-center border-r border-[var(--color-light-beige)] flex items-center justify-center uppercase tracking-wide">
             Space: 뒤집기
           </div>
           
-          <Button
-            variant="secondary"
+          <button
             onClick={handleNext}
             disabled={currentIndex === studyWords.length - 1}
-            className="flex-1"
+            className="px-6 py-4 text-[var(--font-size-small)] text-[var(--color-text)] hover:bg-[var(--color-warm-white)] transition-colors disabled:opacity-30"
           >
             다음 (→)
-          </Button>
+          </button>
         </div>
         
         {/* 학습 완료 */}
         {currentIndex === studyWords.length - 1 && (
-          <div className="mt-8 py-5 px-6 border-[var(--border-base)] border-[var(--color-success)] text-[var(--color-success)] text-center">
-            <p className="font-bold mb-3">마지막 카드입니다!</p>
-            <p className="text-sm">모든 단어를 학습했습니다. 수고하셨습니다!</p>
+          <div className="px-12 py-6 border-t border-[var(--color-light-beige)] text-center">
+            <p className="text-[var(--font-size-small)] text-[var(--color-text)] mb-1">마지막 카드입니다!</p>
+            <p className="text-[var(--font-size-tiny)] text-[var(--color-text-light)]">모든 단어를 학습했습니다. 수고하셨습니다!</p>
           </div>
         )}
       </div>

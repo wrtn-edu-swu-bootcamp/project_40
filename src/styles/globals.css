@@ -201,6 +201,10 @@ textarea {
   animation: slideInUp 0.3s ease-out;
 }
 
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
 /* 3D 변환 유틸리티 (플래시카드용) */
 .perspective-1000 {
   perspective: 1000px;

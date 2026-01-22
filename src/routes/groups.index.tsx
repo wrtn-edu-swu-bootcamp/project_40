@@ -15,40 +15,61 @@ function GroupsPage() {
   }
   
   return (
-    <div className="min-h-screen bg-[var(--color-ivory)] p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-[var(--color-ivory)]">
+      <div className="max-w-[1400px] mx-auto">
         {/* 헤더 */}
-        <div className="mb-8 pb-6 border-b-[var(--border-base)] border-[var(--color-border)]">
-          <h1 className="text-[var(--font-size-display)] font-semibold text-[var(--color-text)] mb-2 tracking-tight">
+        <div className="px-12 py-8 border-b border-[var(--color-dark-charcoal)]">
+          <h1 className="text-[var(--font-size-h1)] font-medium text-[var(--color-text)] tracking-tight">
             한자 그룹
           </h1>
-          <p className="text-[var(--font-size-body)] text-[var(--color-text-light)]">
-            비슷한 한자끼리 자동으로 그룹화됩니다
-          </p>
         </div>
         
         {/* 그룹 목록 */}
         {isLoading && (
-          <div className="text-center text-[var(--color-text-light)] py-12">
+          <div className="px-12 py-12 text-center text-[var(--font-size-small)] text-[var(--color-text-light)]">
             로딩 중...
           </div>
         )}
         
         {!isLoading && groups.length === 0 && (
-          <div className="text-center text-[var(--color-text-light)] py-12">
-            <p className="mb-4">아직 생성된 그룹이 없습니다</p>
-            <p className="text-sm">한자가 포함된 단어를 저장하면 자동으로 그룹이 생성됩니다</p>
+          <div className="px-12 py-12 text-center text-[var(--font-size-small)] text-[var(--color-text-light)]">
+            <p className="mb-2">아직 생성된 그룹이 없습니다</p>
+            <p className="text-[var(--font-size-tiny)]">한자가 포함된 단어를 저장하면 자동으로 그룹이 생성됩니다</p>
           </div>
         )}
         
-        <div className="grid grid-cols-3 gap-6">
-          {groups.map((group) => (
-            <GroupCard
-              key={group.id}
-              group={group}
-              onClick={() => handleGroupClick(group.id)}
-            />
-          ))}
+        {/* 테이블 형식 그룹 목록 */}
+        <div className="space-y-0">
+          {groups.map((group, index) => {
+            const typeLabels = {
+              radical: '부수',
+              component: '구성요소',
+              reading: '음독',
+              custom: '사용자',
+            };
+            
+            return (
+              <div
+                key={group.id}
+                onClick={() => handleGroupClick(group.id)}
+                className="px-12 py-4 border-b border-[var(--color-light-beige)] cursor-pointer hover:bg-[var(--color-warm-white)] transition-colors"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-baseline gap-4">
+                    <span className="font-medium text-[var(--font-size-body)] text-[var(--color-text)] japanese">
+                      {group.name}
+                    </span>
+                    <span className="text-[var(--font-size-tiny)] text-[var(--color-text-lighter)] uppercase tracking-wide">
+                      {typeLabels[group.type]}
+                    </span>
+                  </div>
+                  <span className="text-[var(--font-size-small)] text-[var(--color-text-light)] tabular-nums">
+                    {group.wordIds.length}개 단어
+                  </span>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

@@ -58,32 +58,32 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
   ];
   
   return (
-    <aside className={cn('w-[220px] bg-[var(--color-gray-tint)] p-6 min-h-screen', className)}>
+    <aside className={cn('w-[200px] bg-[var(--color-warm-white)] min-h-screen flex flex-col', className)}>
       {/* 로고 */}
-      <div className="mb-8 pb-6 border-b-[var(--border-base)] border-[var(--color-border)]">
-        <h1 className="text-[var(--font-size-h3)] font-semibold text-[var(--color-text)] mb-1">
+      <div className="px-6 py-8 border-b border-[var(--color-dark-charcoal)]">
+        <h1 className="text-[var(--font-size-body)] font-medium text-[var(--color-text)] mb-1">
           일본어 단어장
         </h1>
-        <p className="text-[var(--font-size-tiny)] text-[var(--color-text-light)]">
-          한자 자동 그룹화
+        <p className="text-[var(--font-size-tiny)] text-[var(--color-text-light)] uppercase tracking-wide">
+          Kanji Grouping
         </p>
       </div>
       
       {/* 네비게이션 */}
-      <nav className="mb-8">
+      <nav className="flex-1 py-4">
         <ul className="space-y-0">
           {navItems.map((item) => (
             <li key={item.to}>
               <Link
                 to={item.to}
                 className={cn(
-                  'flex items-center gap-3 px-4 py-3 text-[var(--font-size-body)] text-[var(--color-text-light)] transition-all duration-150',
-                  'border-l-[3px] border-transparent',
-                  'hover:text-[var(--color-text)]',
-                  '[&.active]:text-[var(--color-sky-blue)] [&.active]:border-l-[3px] [&.active]:border-[var(--color-sky-blue)] [&.active]:font-semibold'
+                  'block px-6 py-3 text-[var(--font-size-small)] text-[var(--color-text-light)] transition-colors',
+                  'border-l-[2px] border-transparent',
+                  'hover:text-[var(--color-text)] hover:bg-[var(--color-ivory)]',
+                  '[&.active]:text-[var(--color-text)] [&.active]:border-l-[2px] [&.active]:border-[var(--color-dark-charcoal)] [&.active]:font-medium [&.active]:bg-[var(--color-ivory)]'
                 )}
               >
-                <span>{item.label}</span>
+                {item.label}
               </Link>
             </li>
           ))}
@@ -91,28 +91,24 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
       </nav>
       
       {/* 데이터 관리 */}
-      <div className="border-t-[var(--border-base)] border-[var(--color-border)] pt-6 mt-auto">
-        <h3 className="text-[var(--font-size-tiny)] font-semibold text-[var(--color-text-light)] mb-3 uppercase tracking-wider">
+      <div className="border-t border-[var(--color-dark-charcoal)]">
+        <h3 className="px-6 py-3 text-[var(--font-size-tiny)] font-medium text-[var(--color-text-lighter)] uppercase tracking-wider">
           데이터 관리
         </h3>
-        <div className="space-y-2">
-          <Button
-            variant="secondary"
-            size="sm"
+        <div className="space-y-0">
+          <button
             onClick={handleExport}
-            className="w-full justify-start text-[var(--font-size-small)]"
+            className="w-full px-6 py-2 text-left text-[var(--font-size-small)] text-[var(--color-text-light)] hover:text-[var(--color-text)] hover:bg-[var(--color-ivory)] transition-colors"
           >
             내보내기
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
+          </button>
+          <button
             onClick={handleImport}
             disabled={isImporting}
-            className="w-full justify-start text-[var(--font-size-small)]"
+            className="w-full px-6 py-2 text-left text-[var(--font-size-small)] text-[var(--color-text-light)] hover:text-[var(--color-text)] hover:bg-[var(--color-ivory)] transition-colors disabled:opacity-50"
           >
             {isImporting ? '가져오는 중...' : '가져오기'}
-          </Button>
+          </button>
         </div>
       </div>
     </aside>

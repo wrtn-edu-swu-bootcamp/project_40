@@ -32,98 +32,90 @@ function DashboardPage() {
   ];
   
   return (
-    <div className="min-h-screen bg-[var(--color-ivory)] p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* 헤더 */}
-        <div className="mb-8 pb-6 border-b-[var(--border-base)] border-[var(--color-border)]">
-          <h1 className="text-[var(--font-size-display)] font-semibold text-[var(--color-text)] mb-2 tracking-tight">
+    <div className="min-h-screen bg-[var(--color-ivory)]">
+      <div className="max-w-[1400px] mx-auto">
+        {/* 헤더 - 다이어리 상단 */}
+        <div className="px-12 py-8 border-b border-[var(--color-dark-charcoal)]">
+          <h1 className="text-[var(--font-size-h1)] font-medium text-[var(--color-text)] tracking-tight">
             대시보드
           </h1>
-          <p className="text-[var(--font-size-body)] text-[var(--color-text-light)]">
-            학습 현황을 한눈에 확인하세요
-          </p>
         </div>
         
-        {/* 통계 카드 */}
-        <div className="grid grid-cols-5 gap-0 mb-12 border-[var(--border-base)] border-[var(--color-border)]">
-          {stats.map((stat, index) => (
-            <div
-              key={stat.label}
-              className={cn(
-                "p-8 text-center transition-all duration-150",
-                index < stats.length - 1 && "border-r-[var(--border-base)] border-[var(--color-border)]"
-              )}
-            >
-              <div className="text-[2rem] font-semibold text-[var(--color-text)] mb-3">
-                {stat.value}
+        {/* 통계 테이블 */}
+        <div className="border-b border-[var(--color-dark-charcoal)]">
+          <div className="grid grid-cols-5">
+            {stats.map((stat, index) => (
+              <div
+                key={stat.label}
+                className={cn(
+                  "px-8 py-6 text-center",
+                  index < stats.length - 1 && "border-r border-[var(--color-dark-charcoal)]"
+                )}
+              >
+                <div className="text-[1.5rem] font-normal text-[var(--color-text)] mb-1 tabular-nums">
+                  {stat.value}
+                </div>
+                <div className="text-[var(--font-size-tiny)] text-[var(--color-text-light)] uppercase tracking-wide">
+                  {stat.label}
+                </div>
               </div>
-              <div className="text-[var(--font-size-small)] text-[var(--color-text-light)]">
-                {stat.label}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
         
-        {/* 빠른 액션 */}
-        <div className="grid grid-cols-2 gap-0 mb-12 border-[var(--border-base)] border-[var(--color-border)]">
-          <div className="p-8 border-r-[var(--border-base)] border-[var(--color-border)]">
-            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-6 pb-4 border-b-[var(--border-thin)] border-[var(--color-border)]">
+        {/* 빠른 액션 & 최근 단어 - 2단 테이블 */}
+        <div className="grid grid-cols-2 border-b border-[var(--color-dark-charcoal)]">
+          {/* 왼쪽 컬럼 */}
+          <div className="px-12 py-8 border-r border-[var(--color-dark-charcoal)]">
+            <h2 className="text-[var(--font-size-small)] font-medium text-[var(--color-text)] mb-6 uppercase tracking-wide">
               빠른 시작
             </h2>
-            <div className="space-y-4">
-              <Link to="/search">
-                <Button className="w-full justify-start">
-                  새 단어 검색하기
-                </Button>
+            <div className="space-y-0">
+              <Link to="/search" className="block py-3 px-4 border-t border-[var(--color-light-beige)] text-[var(--font-size-body)] text-[var(--color-text)] hover:bg-[var(--color-sky-tint)] transition-colors">
+                새 단어 검색하기
               </Link>
-              <Link to="/study">
-                <Button variant="secondary" className="w-full justify-start">
-                  학습 모드 시작
-                </Button>
+              <Link to="/study" className="block py-3 px-4 border-t border-[var(--color-light-beige)] text-[var(--font-size-body)] text-[var(--color-text)] hover:bg-[var(--color-sky-tint)] transition-colors">
+                학습 모드 시작
               </Link>
-              <Link to="/words">
-                <Button variant="secondary" className="w-full justify-start">
-                  내 단어장 보기
-                </Button>
+              <Link to="/words" className="block py-3 px-4 border-t border-[var(--color-light-beige)] border-b border-[var(--color-light-beige)] text-[var(--font-size-body)] text-[var(--color-text)] hover:bg-[var(--color-sky-tint)] transition-colors">
+                내 단어장 보기
               </Link>
             </div>
           </div>
           
-          {/* 최근 추가한 단어 */}
-          <div className="p-8">
-            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-6 pb-4 border-b-[var(--border-thin)] border-[var(--color-border)]">
+          {/* 오른쪽 컬럼 */}
+          <div className="px-12 py-8">
+            <h2 className="text-[var(--font-size-small)] font-medium text-[var(--color-text)] mb-6 uppercase tracking-wide">
               최근 추가한 단어
             </h2>
             {!recentWords || recentWords.length === 0 ? (
-              <div className="text-center text-[var(--color-text-light)] py-8">
+              <div className="py-8 text-center text-[var(--font-size-small)] text-[var(--color-text-light)]">
                 아직 저장된 단어가 없습니다
               </div>
             ) : (
-              <div className="space-y-4">
-                {recentWords.map((word) => (
+              <div className="space-y-0">
+                {recentWords.map((word, index) => (
                   <Link
                     key={word.id}
                     to="/words/$wordId"
                     params={{ wordId: word.id }}
-                    className="block py-4 px-5 border-[var(--border-thin)] border-[var(--color-border)] hover:border-[var(--color-sky-blue)] transition-all duration-150"
+                    className={cn(
+                      "block py-3 px-4 border-t border-[var(--color-light-beige)] hover:bg-[var(--color-cream-tint)] transition-colors",
+                      index === recentWords.length - 1 && "border-b border-[var(--color-light-beige)]"
+                    )}
                   >
-                    <div className="flex items-baseline gap-2 mb-1.5">
-                      <span className="font-medium text-[var(--font-size-h3)] text-[var(--color-text)] japanese">
+                    <div className="flex items-baseline gap-3">
+                      <span className="font-medium text-[var(--font-size-body)] text-[var(--color-text)] japanese">
                         {word.word}
                       </span>
-                      <span className="text-[var(--font-size-small)] text-[var(--color-text-light)] japanese">
+                      <span className="text-[var(--font-size-tiny)] text-[var(--color-text-light)] japanese">
                         {word.reading}
                       </span>
-                    </div>
-                    <div className="flex items-center gap-2">
                       {word.jlptLevel && (
-                        <Badge variant="jlpt" jlptLevel={word.jlptLevel}>
+                        <span className="ml-auto text-[var(--font-size-tiny)] text-[var(--color-text-lighter)]">
                           {word.jlptLevel}
-                        </Badge>
+                        </span>
                       )}
-                      <span className="text-xs text-[var(--color-text-lighter)]">
-                        {word.meanings[0]?.definitions[0]}
-                      </span>
                     </div>
                   </Link>
                 ))}
@@ -134,45 +126,46 @@ function DashboardPage() {
         
         {/* 학습 진도 */}
         {totalWords && totalWords > 0 && (
-          <div className="border-[var(--border-thin)] border-[var(--color-border)] p-8">
-            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-6 pb-4 border-b-[var(--border-thin)] border-[var(--color-border)]">
+          <div className="px-12 py-8 border-b border-[var(--color-dark-charcoal)]">
+            <h2 className="text-[var(--font-size-small)] font-medium text-[var(--color-text)] mb-6 uppercase tracking-wide">
               학습 진도
             </h2>
-            <div className="space-y-4">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[var(--font-size-body)] text-[var(--color-text)]">전체 진행률</span>
-                  <span className="text-[var(--font-size-body)] font-semibold text-[var(--color-text)]">
-                    {Math.round(((masteredWords || 0) / totalWords) * 100)}%
-                  </span>
-                </div>
-                <div className="w-full h-2 bg-[var(--color-light-beige)] overflow-hidden">
-                  <div
-                    className="h-full bg-[var(--color-success)] transition-all duration-300"
-                    style={{ width: `${((masteredWords || 0) / totalWords) * 100}%` }}
-                  />
-                </div>
+            
+            {/* 진행률 바 */}
+            <div className="mb-8">
+              <div className="flex items-baseline justify-between mb-2">
+                <span className="text-[var(--font-size-small)] text-[var(--color-text-light)]">전체 진행률</span>
+                <span className="text-[var(--font-size-body)] font-medium text-[var(--color-text)] tabular-nums">
+                  {Math.round(((masteredWords || 0) / totalWords) * 100)}%
+                </span>
               </div>
-              
-              <div className="grid grid-cols-3 gap-0 text-center border-[var(--border-thin)] border-[var(--color-border)]">
-                <div className="py-6 px-4 border-r-[var(--border-thin)] border-[var(--color-border)]">
-                  <div className="text-[1.5rem] font-semibold text-[var(--color-text)] mb-2">
-                    {newWords || 0}
-                  </div>
-                  <div className="text-[var(--font-size-small)] text-[var(--color-text-light)]">새 단어</div>
+              <div className="w-full h-[2px] bg-[var(--color-light-beige)]">
+                <div
+                  className="h-full bg-[var(--color-dark-charcoal)] transition-all duration-300"
+                  style={{ width: `${((masteredWords || 0) / totalWords) * 100}%` }}
+                />
+              </div>
+            </div>
+            
+            {/* 상태별 통계 */}
+            <div className="grid grid-cols-3">
+              <div className="px-4 py-4 text-center border-r border-[var(--color-light-beige)]">
+                <div className="text-[1.25rem] font-normal text-[var(--color-text)] mb-1 tabular-nums">
+                  {newWords || 0}
                 </div>
-                <div className="py-6 px-4 border-r-[var(--border-thin)] border-[var(--color-border)]">
-                  <div className="text-[1.5rem] font-semibold text-[var(--color-text)] mb-2">
-                    {learningWords || 0}
-                  </div>
-                  <div className="text-[var(--font-size-small)] text-[var(--color-text-light)]">학습중</div>
+                <div className="text-[var(--font-size-tiny)] text-[var(--color-text-light)] uppercase tracking-wide">새 단어</div>
+              </div>
+              <div className="px-4 py-4 text-center border-r border-[var(--color-light-beige)]">
+                <div className="text-[1.25rem] font-normal text-[var(--color-text)] mb-1 tabular-nums">
+                  {learningWords || 0}
                 </div>
-                <div className="py-6 px-4">
-                  <div className="text-[1.5rem] font-semibold text-[var(--color-text)] mb-2">
-                    {masteredWords || 0}
-                  </div>
-                  <div className="text-[var(--font-size-small)] text-[var(--color-text-light)]">암기함</div>
+                <div className="text-[var(--font-size-tiny)] text-[var(--color-text-light)] uppercase tracking-wide">학습중</div>
+              </div>
+              <div className="px-4 py-4 text-center">
+                <div className="text-[1.25rem] font-normal text-[var(--color-text)] mb-1 tabular-nums">
+                  {masteredWords || 0}
                 </div>
+                <div className="text-[var(--font-size-tiny)] text-[var(--color-text-light)] uppercase tracking-wide">암기함</div>
               </div>
             </div>
           </div>

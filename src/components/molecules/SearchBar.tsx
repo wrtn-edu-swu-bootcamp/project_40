@@ -33,29 +33,31 @@ export const SearchBar = memo(function SearchBar({
   return (
     <form
       onSubmit={handleSubmit}
-      className={cn('flex gap-2 items-center', className)}
+      className={cn('flex items-center border-b border-[var(--color-dark-charcoal)]', className)}
     >
-      <div className="flex-1 relative">
-        <Input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={placeholder}
-          className="pr-10"
-        />
-        {query && (
-          <button
-            type="button"
-            onClick={handleClear}
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center hover:bg-[var(--color-gray-tint)] text-[var(--color-medium-gray)] transition-colors"
-          >
-            ×
-          </button>
-        )}
-      </div>
-      <Button type="submit" disabled={!query.trim()}>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder={placeholder}
+        className="flex-1 py-3 px-0 bg-transparent border-none text-[var(--font-size-body)] text-[var(--color-text)] placeholder:text-[var(--color-text-lighter)] focus:outline-none"
+      />
+      {query && (
+        <button
+          type="button"
+          onClick={handleClear}
+          className="px-3 py-1 text-[var(--font-size-small)] text-[var(--color-text-light)] hover:text-[var(--color-text)] transition-colors"
+        >
+          지우기
+        </button>
+      )}
+      <button
+        type="submit"
+        disabled={!query.trim()}
+        className="px-4 py-1 text-[var(--font-size-small)] text-[var(--color-text)] hover:text-[var(--color-sky-blue)] transition-colors disabled:opacity-30"
+      >
         검색
-      </Button>
+      </button>
     </form>
   );
 });

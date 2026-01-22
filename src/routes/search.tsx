@@ -8,6 +8,7 @@ import { useWords } from '@/features/words/hooks/useWords';
 import { useGroups } from '@/features/groups/hooks/useGroups';
 import { suggestGroups } from '@/features/kanji/utils/groupSuggester';
 import { addWordToGroup, updateWord, getWordByExactMatch } from '@/lib/db/queries';
+import { cn } from '@/lib/utils/cn';
 import type { GroupSuggestion } from '@/types/group';
 import type { DictionaryEntry } from '@/lib/data/sample-words';
 
@@ -123,87 +124,65 @@ function SearchPage() {
   }
   
   return (
-    <div className="min-h-screen bg-[var(--color-ivory)] p-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[var(--color-ivory)]">
+      <div className="max-w-[1400px] mx-auto">
         {/* 헤더 */}
-        <div className="mb-8 pb-6 border-b-[var(--border-base)] border-[var(--color-border)]">
-          <h1 className="text-[var(--font-size-display)] font-semibold text-[var(--color-text)] mb-2 tracking-tight">
+        <div className="px-12 py-8 border-b border-[var(--color-dark-charcoal)]">
+          <h1 className="text-[var(--font-size-h1)] font-medium text-[var(--color-text)] tracking-tight mb-4">
             단어 검색
           </h1>
-          <p className="text-[var(--font-size-body)] text-[var(--color-text-light)]">
-            한국어, 히라가나, 한자, 로마자 모두 검색 가능합니다 (214,000+ 단어)
-          </p>
-        </div>
-        
-        {/* 검색바 */}
-        <div className="mb-10">
           <SearchBar onSearch={search} />
         </div>
         
         {/* 2단 레이아웃 */}
-        <div className="grid grid-cols-2 gap-0 border-[var(--border-base)] border-[var(--color-border)]">
+        <div className="grid grid-cols-2">
           {/* 좌측: 검색 결과 리스트 */}
-          <div className="p-8 h-[650px] overflow-y-auto border-r-[var(--border-base)] border-[var(--color-border)]">
-            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-6 pb-4 border-b-[var(--border-thin)] border-[var(--color-border)]">
-              검색 결과 ({results.length})
-            </h2>
+          <div className="h-[650px] overflow-y-auto border-r border-[var(--color-dark-charcoal)]">
+            {/* 헤더 */}
+            <div className="px-8 py-4 border-b border-[var(--color-dark-charcoal)] sticky top-0 bg-[var(--color-ivory)]">
+              <span className="text-[var(--font-size-small)] font-medium text-[var(--color-text)]">
+                검색 결과 ({results.length})
+              </span>
+            </div>
             
             {isSearching && (
-              <div className="text-center text-[var(--color-text-light)] py-8">
+              <div className="px-8 py-12 text-center text-[var(--font-size-small)] text-[var(--color-text-light)]">
                 검색 중...
               </div>
             )}
             
             {!isSearching && results.length === 0 && (
-              <div className="text-center text-[var(--color-text-light)] py-8">
+              <div className="px-8 py-12 text-center text-[var(--font-size-small)] text-[var(--color-text-light)]">
                 검색 결과가 없습니다
               </div>
             )}
             
-            <div className="space-y-4">
+            {/* 테이블 형식 검색 결과 */}
+            <div className="space-y-0">
               {results.map((entry, index) => (
                 <div
                   key={index}
-                  className={`py-5 px-6 border-[var(--border-thin)] transition-all duration-150 ${
-                    selectedIndex === index
-                      ? 'border-[var(--color-sky-blue)]'
-                      : 'border-[var(--color-border)] hover:border-[var(--color-medium-gray)]'
-                  }`}
+                  onClick={() => setSelectedIndex(index)}
+                  className={cn(
+                    "px-8 py-4 border-b border-[var(--color-light-beige)] cursor-pointer transition-colors",
+                    selectedIndex === index ? "bg-[var(--color-cream-tint)]" : "hover:bg-[var(--color-warm-white)]"
+                  )}
                 >
-                  <div 
-                    className="cursor-pointer"
-                    onClick={() => setSelectedIndex(index)}
-                  >
-                    <div className="flex items-baseline gap-2 mb-1.5">
-                      <span className="text-[var(--font-size-h2)] font-medium text-[var(--color-text)] japanese">
-                        {entry.word}
+                  <div className="flex items-baseline gap-3 mb-1">
+                    <span className="font-medium text-[var(--font-size-body)] text-[var(--color-text)] japanese">
+                      {entry.word}
+                    </span>
+                    <span className="text-[var(--font-size-tiny)] text-[var(--color-text-light)] japanese">
+                      {entry.reading}
+                    </span>
+                    {entry.jlptLevel && (
+                      <span className="ml-auto text-[var(--font-size-tiny)] text-[var(--color-text-lighter)]">
+                        {entry.jlptLevel}
                       </span>
-                      <span className="text-[var(--font-size-small)] text-[var(--color-text-light)] japanese">
-                        {entry.reading}
-                      </span>
-                      {entry.jlptLevel && (
-                        <Badge variant="jlpt" jlptLevel={entry.jlptLevel} className="ml-auto">
-                          {entry.jlptLevel}
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="text-[var(--font-size-body)] text-[var(--color-text)] leading-relaxed">
-                      {entry.meanings[0]?.definitions[0]}
-                    </div>
+                    )}
                   </div>
-                  <div className="mt-5 pt-4 border-t-[var(--border-thin)] border-[var(--color-border)]">
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSave(entry);
-                      }}
-                      disabled={isSaving}
-                      size="sm"
-                      variant="secondary"
-                      className="w-full"
-                    >
-                      💾 저장
-                    </Button>
+                  <div className="text-[var(--font-size-small)] text-[var(--color-text-light)] truncate">
+                    {entry.meanings[0]?.definitions[0]}
                   </div>
                 </div>
               ))}
@@ -211,39 +190,39 @@ function SearchPage() {
           </div>
           
           {/* 우측: 선택한 단어 상세 */}
-          <div className="p-8 h-[650px] overflow-y-auto">
+          <div className="px-12 py-8 h-[650px] overflow-y-auto">
             {selectedResult ? (
               <>
-                <div className="mb-8 pb-6 border-b-[var(--border-thin)] border-[var(--color-border)]">
-                  <div className="flex items-baseline gap-3 mb-5">
-                    <h2 className="text-[2rem] font-semibold text-[var(--color-text)] japanese">
+                <div className="mb-8 pb-6 border-b border-[var(--color-light-beige)]">
+                  <div className="flex items-baseline gap-4 mb-3">
+                    <h2 className="text-[1.75rem] font-normal text-[var(--color-text)] japanese">
                       {selectedResult.word}
                     </h2>
-                    <span className="text-[1.25rem] text-[var(--color-text-light)] japanese">
+                    <span className="text-[var(--font-size-body)] text-[var(--color-text-light)] japanese">
                       {selectedResult.reading}
                     </span>
                   </div>
                   
                   {selectedResult.jlptLevel && (
-                    <Badge variant="jlpt" jlptLevel={selectedResult.jlptLevel}>
+                    <span className="text-[var(--font-size-tiny)] text-[var(--color-text-light)]">
                       {selectedResult.jlptLevel}
-                    </Badge>
+                    </span>
                   )}
                 </div>
                 
                 {/* 뜻 */}
                 <div className="mb-8">
-                  <h3 className="text-[var(--font-size-body)] font-semibold text-[var(--color-text)] mb-4 pb-3 border-b-[var(--border-thin)] border-[var(--color-border)]">
+                  <h3 className="text-[var(--font-size-tiny)] font-medium text-[var(--color-text-light)] mb-4 uppercase tracking-wide">
                     의미
                   </h3>
-                    {selectedResult.meanings.map((meaning, idx) => (
-                    <div key={idx} className="mb-5 py-4 px-5 border-[var(--border-thin)] border-[var(--color-border)]">
-                      <div className="text-[var(--font-size-small)] text-[var(--color-text-lighter)] mb-2 font-medium">
+                  {selectedResult.meanings.map((meaning, idx) => (
+                    <div key={idx} className="mb-4 pb-4 border-b border-[var(--color-light-beige)] last:border-b-0">
+                      <div className="text-[var(--font-size-tiny)] text-[var(--color-text-lighter)] mb-2 uppercase tracking-wide">
                         {meaning.partOfSpeech}
                       </div>
-                      <ul className="list-disc list-inside space-y-1.5">
+                      <ul className="space-y-1">
                         {meaning.definitions.map((def, defIdx) => (
-                          <li key={defIdx} className="text-[var(--font-size-body)] text-[var(--color-text)] leading-relaxed">
+                          <li key={defIdx} className="text-[var(--font-size-small)] text-[var(--color-text)] leading-relaxed pl-4 relative before:content-['·'] before:absolute before:left-0">
                             {def}
                           </li>
                         ))}
@@ -253,16 +232,18 @@ function SearchPage() {
                 </div>
                 
                 {/* 저장 버튼 */}
-                <Button
-                  onClick={() => handleSave(selectedResult)}
-                  disabled={isSaving}
-                  className="w-full"
-                >
-                  {isSaving ? '저장 중...' : '내 단어장에 저장'}
-                </Button>
+                <div className="border-t border-[var(--color-dark-charcoal)]">
+                  <button
+                    onClick={() => handleSave(selectedResult)}
+                    disabled={isSaving}
+                    className="w-full py-3 text-[var(--font-size-small)] text-[var(--color-text)] hover:bg-[var(--color-sky-tint)] transition-colors"
+                  >
+                    {isSaving ? '저장 중...' : '내 단어장에 저장'}
+                  </button>
+                </div>
               </>
             ) : (
-              <div className="flex items-center justify-center h-full text-[var(--color-text-light)]">
+              <div className="flex items-center justify-center h-full text-[var(--font-size-small)] text-[var(--color-text-light)]">
                 단어를 선택하세요
               </div>
             )}
@@ -271,69 +252,69 @@ function SearchPage() {
         
         {/* 그룹 추천 모달 */}
         {showGroupSuggestions && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-[var(--color-ivory)] border-[var(--border-base)] border-[var(--color-border)] max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
-              <div className="p-8 border-b-[var(--border-base)] border-[var(--color-border)]">
-                <h2 className="text-xl font-bold text-[var(--color-text)] mb-2">
+          <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+            <div className="bg-[var(--color-ivory)] border border-[var(--color-dark-charcoal)] max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
+              {/* 헤더 */}
+              <div className="px-8 py-6 border-b border-[var(--color-dark-charcoal)]">
+                <h2 className="text-[var(--font-size-h2)] font-medium text-[var(--color-text)] mb-2">
                   그룹 추천
                 </h2>
-                <p className="text-sm text-[var(--color-text-light)]">
-                  이 단어와 관련된 그룹을 발견했습니다! 추가할 그룹을 선택하세요.
+                <p className="text-[var(--font-size-small)] text-[var(--color-text-light)]">
+                  이 단어와 관련된 그룹을 발견했습니다. 추가할 그룹을 선택하세요.
                 </p>
               </div>
               
-              <div className="p-8 space-y-0 border-b-[var(--border-base)] border-[var(--color-border)]">
+              {/* 그룹 목록 */}
+              <div className="space-y-0">
                 {groupSuggestions.map((suggestion, idx) => (
                   <label
                     key={idx}
-                    className={`block py-4 px-5 cursor-pointer transition-all border-b-[var(--border-thin)] border-[var(--color-border)] last:border-b-0 ${
+                    className={cn(
+                      "block py-4 px-8 cursor-pointer transition-colors border-b border-[var(--color-light-beige)] last:border-b-0",
                       selectedGroupIndices.has(idx)
-                        ? 'bg-[var(--color-sky-tint)]'
-                        : 'hover:bg-[var(--color-light-beige)]'
-                    }`}
+                        ? 'bg-[var(--color-cream-tint)]'
+                        : 'hover:bg-[var(--color-warm-white)]'
+                    )}
                   >
                     <div className="flex items-start gap-3">
                       <input
                         type="checkbox"
                         checked={selectedGroupIndices.has(idx)}
                         onChange={() => toggleGroupSelection(idx)}
-                        className="mt-1 w-4 h-4 text-[var(--color-sky-blue)] border-gray-300 focus:ring-[var(--color-sky-blue)]"
+                        className="mt-0.5 w-4 h-4"
                       />
-                      <div className="flex-1">
-                        <div className="font-bold text-[var(--color-text)] mb-1 japanese">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-[var(--font-size-body)] text-[var(--color-text)] mb-1 japanese">
                           {suggestion.name}
                         </div>
-                        <div className="text-sm text-[var(--color-text-light)] mb-2">
-                          관련 한자: {suggestion.relatedWords.join(', ')}
+                        <div className="text-[var(--font-size-small)] text-[var(--color-text-light)] mb-1">
+                          {suggestion.relatedWords.join(', ')}
                         </div>
-                        <Badge>{suggestion.count}개 한자</Badge>
+                        <div className="text-[var(--font-size-tiny)] text-[var(--color-text-lighter)]">
+                          {suggestion.count}개 한자
+                        </div>
                       </div>
                     </div>
                   </label>
                 ))}
               </div>
               
-              <div className="grid grid-cols-2 gap-0">
-                <div className="p-4 border-r-[var(--border-thin)] border-[var(--color-border)]">
-                  <Button
-                    onClick={closeGroupSuggestions}
-                    variant="secondary"
-                    className="w-full"
-                    disabled={isSaving}
-                  >
-                    그룹 없이 저장
-                  </Button>
-                </div>
-                <div className="p-4">
-                  <Button
-                    onClick={confirmGroupSuggestions}
-                    variant="secondary"
-                    className="w-full"
-                    disabled={isSaving || selectedGroupIndices.size === 0}
-                  >
-                    {isSaving ? '저장 중...' : selectedGroupIndices.size === 0 ? '그룹을 선택하세요' : `${selectedGroupIndices.size}개 그룹에 추가`}
-                  </Button>
-                </div>
+              {/* 버튼 */}
+              <div className="grid grid-cols-2 border-t border-[var(--color-dark-charcoal)]">
+                <button
+                  onClick={closeGroupSuggestions}
+                  disabled={isSaving}
+                  className="py-4 text-[var(--font-size-small)] text-[var(--color-text-light)] border-r border-[var(--color-light-beige)] hover:bg-[var(--color-warm-white)] transition-colors disabled:opacity-30"
+                >
+                  그룹 없이 저장
+                </button>
+                <button
+                  onClick={confirmGroupSuggestions}
+                  disabled={isSaving || selectedGroupIndices.size === 0}
+                  className="py-4 text-[var(--font-size-small)] text-[var(--color-text)] hover:bg-[var(--color-warm-white)] transition-colors disabled:opacity-30"
+                >
+                  {isSaving ? '저장 중...' : selectedGroupIndices.size === 0 ? '그룹을 선택하세요' : `${selectedGroupIndices.size}개 그룹에 추가`}
+                </button>
               </div>
             </div>
           </div>
