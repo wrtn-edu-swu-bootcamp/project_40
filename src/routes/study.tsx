@@ -74,7 +74,7 @@ function StudyPage() {
     <div className="min-h-screen bg-[var(--color-ivory)] p-6">
       <div className="max-w-3xl mx-auto">
         {/* 헤더 */}
-        <div className="mb-8">
+        <div className="mb-8 pb-6 border-b-[var(--border-base)] border-[var(--color-border)]">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-[var(--font-size-display)] font-semibold text-[var(--color-text)] tracking-tight">
               학습 모드
@@ -85,7 +85,7 @@ function StudyPage() {
           </div>
           
           {/* 진행률 바 */}
-          <div className="w-full h-2 bg-[var(--color-light-beige)] overflow-hidden">
+          <div className="w-full h-2 bg-[var(--color-light-beige)] overflow-hidden border-[var(--border-thin)] border-[var(--color-border)]">
             <div
               className="h-full bg-[var(--color-sky-blue)] transition-all duration-300"
               style={{ width: `${progress}%` }}
@@ -97,7 +97,7 @@ function StudyPage() {
         <Flashcard word={currentWord} className="mb-8" />
         
         {/* 컨트롤 */}
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-4 pt-6 border-t-[var(--border-base)] border-[var(--color-border)]">
           <Button
             variant="secondary"
             onClick={handlePrevious}
@@ -107,7 +107,7 @@ function StudyPage() {
             ← 이전 (←)
           </Button>
           
-          <div className="text-sm text-[var(--color-text-light)] text-center">
+          <div className="text-sm text-[var(--color-text-light)] text-center px-6 py-3 border-[var(--border-thin)] border-[var(--color-border)]">
             Space: 뒤집기
           </div>
           

@@ -126,7 +126,7 @@ function SearchPage() {
     <div className="min-h-screen bg-[var(--color-ivory)] p-8">
       <div className="max-w-7xl mx-auto">
         {/* 헤더 */}
-        <div className="mb-8">
+        <div className="mb-8 pb-6 border-b-[var(--border-base)] border-[var(--color-border)]">
           <h1 className="text-[var(--font-size-display)] font-semibold text-[var(--color-text)] mb-2 tracking-tight">
             단어 검색
           </h1>
@@ -141,9 +141,9 @@ function SearchPage() {
         </div>
         
         {/* 2단 레이아웃 */}
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-0 border-[var(--border-base)] border-[var(--color-border)]">
           {/* 좌측: 검색 결과 리스트 */}
-          <div className="border-[var(--border-thin)] border-[var(--color-border)] p-8 h-[650px] overflow-y-auto">
+          <div className="p-8 h-[650px] overflow-y-auto border-r-[var(--border-base)] border-[var(--color-border)]">
             <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-6 pb-4 border-b-[var(--border-thin)] border-[var(--color-border)]">
               검색 결과 ({results.length})
             </h2>
@@ -211,7 +211,7 @@ function SearchPage() {
           </div>
           
           {/* 우측: 선택한 단어 상세 */}
-          <div className="border-[var(--border-thin)] border-[var(--color-border)] p-8 h-[650px] overflow-y-auto">
+          <div className="p-8 h-[650px] overflow-y-auto">
             {selectedResult ? (
               <>
                 <div className="mb-8 pb-6 border-b-[var(--border-thin)] border-[var(--color-border)]">
@@ -272,22 +272,24 @@ function SearchPage() {
         {/* 그룹 추천 모달 */}
         {showGroupSuggestions && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-[var(--color-ivory)] border-[var(--border-base)] border-[var(--color-border)] p-8 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
-              <h2 className="text-xl font-bold text-[var(--color-text)] mb-4">
-                그룹 추천
-              </h2>
-              <p className="text-sm text-[var(--color-text-light)] mb-4">
-                이 단어와 관련된 그룹을 발견했습니다! 추가할 그룹을 선택하세요.
-              </p>
+            <div className="bg-[var(--color-ivory)] border-[var(--border-base)] border-[var(--color-border)] max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
+              <div className="p-8 border-b-[var(--border-base)] border-[var(--color-border)]">
+                <h2 className="text-xl font-bold text-[var(--color-text)] mb-2">
+                  그룹 추천
+                </h2>
+                <p className="text-sm text-[var(--color-text-light)]">
+                  이 단어와 관련된 그룹을 발견했습니다! 추가할 그룹을 선택하세요.
+                </p>
+              </div>
               
-              <div className="space-y-4 mb-8">
+              <div className="p-8 space-y-0 border-b-[var(--border-base)] border-[var(--color-border)]">
                 {groupSuggestions.map((suggestion, idx) => (
                   <label
                     key={idx}
-                    className={`block py-4 px-5 border-[var(--border-thin)] cursor-pointer transition-all ${
+                    className={`block py-4 px-5 cursor-pointer transition-all border-b-[var(--border-thin)] border-[var(--color-border)] last:border-b-0 ${
                       selectedGroupIndices.has(idx)
-                        ? 'border-[var(--color-sky-blue)]'
-                        : 'border-[var(--color-border)] hover:border-[var(--color-medium-gray)]'
+                        ? 'bg-[var(--color-sky-tint)]'
+                        : 'hover:bg-[var(--color-light-beige)]'
                     }`}
                   >
                     <div className="flex items-start gap-3">
@@ -311,23 +313,27 @@ function SearchPage() {
                 ))}
               </div>
               
-              <div className="flex gap-3">
-                <Button
-                  onClick={closeGroupSuggestions}
-                  variant="secondary"
-                  className="flex-1"
-                  disabled={isSaving}
-                >
-                  그룹 없이 저장
-                </Button>
-                <Button
-                  onClick={confirmGroupSuggestions}
-                  variant="secondary"
-                  className="flex-1"
-                  disabled={isSaving || selectedGroupIndices.size === 0}
-                >
-                  {isSaving ? '저장 중...' : selectedGroupIndices.size === 0 ? '그룹을 선택하세요' : `${selectedGroupIndices.size}개 그룹에 추가`}
-                </Button>
+              <div className="grid grid-cols-2 gap-0">
+                <div className="p-4 border-r-[var(--border-thin)] border-[var(--color-border)]">
+                  <Button
+                    onClick={closeGroupSuggestions}
+                    variant="secondary"
+                    className="w-full"
+                    disabled={isSaving}
+                  >
+                    그룹 없이 저장
+                  </Button>
+                </div>
+                <div className="p-4">
+                  <Button
+                    onClick={confirmGroupSuggestions}
+                    variant="secondary"
+                    className="w-full"
+                    disabled={isSaving || selectedGroupIndices.size === 0}
+                  >
+                    {isSaving ? '저장 중...' : selectedGroupIndices.size === 0 ? '그룹을 선택하세요' : `${selectedGroupIndices.size}개 그룹에 추가`}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

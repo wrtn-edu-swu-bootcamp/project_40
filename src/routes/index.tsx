@@ -3,6 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { Button } from '@/components/atoms/Button';
 import { Badge } from '@/components/atoms/Badge';
 import { db } from '@/lib/db/schema';
+import { cn } from '@/lib/utils/cn';
 
 export const Route = createFileRoute('/')({
   component: DashboardPage,
@@ -34,7 +35,7 @@ function DashboardPage() {
     <div className="min-h-screen bg-[var(--color-ivory)] p-8">
       <div className="max-w-7xl mx-auto">
         {/* 헤더 */}
-        <div className="mb-8">
+        <div className="mb-8 pb-6 border-b-[var(--border-base)] border-[var(--color-border)]">
           <h1 className="text-[var(--font-size-display)] font-semibold text-[var(--color-text)] mb-2 tracking-tight">
             대시보드
           </h1>
@@ -44,11 +45,14 @@ function DashboardPage() {
         </div>
         
         {/* 통계 카드 */}
-        <div className="grid grid-cols-5 gap-6 mb-12">
-          {stats.map((stat) => (
+        <div className="grid grid-cols-5 gap-0 mb-12 border-[var(--border-base)] border-[var(--color-border)]">
+          {stats.map((stat, index) => (
             <div
               key={stat.label}
-              className="border-[var(--border-thin)] border-[var(--color-border)] p-8 text-center transition-all duration-150"
+              className={cn(
+                "p-8 text-center transition-all duration-150",
+                index < stats.length - 1 && "border-r-[var(--border-base)] border-[var(--color-border)]"
+              )}
             >
               <div className="text-[2rem] font-semibold text-[var(--color-text)] mb-3">
                 {stat.value}
@@ -61,8 +65,8 @@ function DashboardPage() {
         </div>
         
         {/* 빠른 액션 */}
-        <div className="grid grid-cols-2 gap-8 mb-12">
-          <div className="border-[var(--border-thin)] border-[var(--color-border)] p-8">
+        <div className="grid grid-cols-2 gap-0 mb-12 border-[var(--border-base)] border-[var(--color-border)]">
+          <div className="p-8 border-r-[var(--border-base)] border-[var(--color-border)]">
             <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-6 pb-4 border-b-[var(--border-thin)] border-[var(--color-border)]">
               빠른 시작
             </h2>
@@ -86,7 +90,7 @@ function DashboardPage() {
           </div>
           
           {/* 최근 추가한 단어 */}
-          <div className="border-[var(--border-thin)] border-[var(--color-border)] p-8">
+          <div className="p-8">
             <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-6 pb-4 border-b-[var(--border-thin)] border-[var(--color-border)]">
               최근 추가한 단어
             </h2>

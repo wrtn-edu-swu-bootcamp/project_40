@@ -28,8 +28,8 @@ export const FilterPanel = memo(function FilterPanel({
   ];
   
   return (
-    <div className={cn('border-[var(--border-thin)] border-[var(--color-border)] p-6', className)}>
-      <h3 className="text-sm font-bold text-[var(--color-text)] mb-5 pb-3 border-b-[var(--border-thin)] border-[var(--color-border)]">
+    <div className={cn('p-6', className)}>
+      <h3 className="text-sm font-bold text-[var(--color-text)] mb-5 pb-3 border-b-[var(--border-base)] border-[var(--color-border)]">
         학습 상태
       </h3>
       

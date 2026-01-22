@@ -50,7 +50,7 @@ function GroupDetailPage() {
     <div className="min-h-screen bg-[var(--color-ivory)] p-8">
       <div className="max-w-4xl mx-auto">
         {/* 헤더 */}
-        <div className="mb-8">
+        <div className="mb-8 pb-6 border-b-[var(--border-base)] border-[var(--color-border)]">
           <Button
             variant="ghost"
             onClick={() => window.history.back()}

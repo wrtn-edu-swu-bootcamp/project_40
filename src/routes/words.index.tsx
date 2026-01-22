@@ -46,7 +46,7 @@ function WordsPage() {
     <div className="min-h-screen bg-[var(--color-ivory)] p-8">
       <div className="max-w-7xl mx-auto">
         {/* 헤더 */}
-        <div className="mb-8">
+        <div className="mb-8 pb-6 border-b-[var(--border-base)] border-[var(--color-border)]">
           <h1 className="text-[var(--font-size-display)] font-semibold text-[var(--color-text)] mb-2 tracking-tight">
             내 단어장
           </h1>
@@ -56,9 +56,9 @@ function WordsPage() {
         </div>
         
         {/* 3단 레이아웃 */}
-        <div className="grid grid-cols-12 gap-6">
+        <div className="grid grid-cols-12 gap-0 border-[var(--border-base)] border-[var(--color-border)]">
           {/* 좌측: 필터 패널 */}
-          <div className="col-span-2">
+          <div className="col-span-2 border-r-[var(--border-base)] border-[var(--color-border)]">
             <FilterPanel
               selectedStatus={selectedStatus}
               onStatusChange={setSelectedStatus}
@@ -67,8 +67,8 @@ function WordsPage() {
           </div>
           
           {/* 중앙: 단어 목록 */}
-          <div className="col-span-5">
-            <div className="border-[var(--border-thin)] border-[var(--color-border)] p-8 h-[700px] overflow-y-auto">
+          <div className="col-span-5 border-r-[var(--border-base)] border-[var(--color-border)]">
+            <div className="p-8 h-[700px] overflow-y-auto">
               <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-6 pb-4 border-b-[var(--border-thin)] border-[var(--color-border)]">
                 단어 목록 ({filteredWords.length})
               </h2>
@@ -104,7 +104,7 @@ function WordsPage() {
           
           {/* 우측: 단어 상세 */}
           <div className="col-span-5">
-            <div className="border-[var(--border-thin)] border-[var(--color-border)] p-8 h-[700px] overflow-y-auto">
+            <div className="p-8 h-[700px] overflow-y-auto">
               {selectedWord ? (
                 <>
                   <div className="mb-8 pb-6 border-b-[var(--border-thin)] border-[var(--color-border)]">

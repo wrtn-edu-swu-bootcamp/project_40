@@ -45,7 +45,7 @@ export const WordCard = memo(function WordCard({
           </div>
           
           {/* 뜻 */}
-          <div className="mb-4">
+          <div className="mb-4 pb-4 border-b-[var(--border-thin)] border-[var(--color-border)]">
             {word.meanings.slice(0, 2).map((meaning, idx) => (
               <div key={idx} className="text-sm text-[var(--color-text)] leading-relaxed">
                 <span className="text-[var(--color-text-lighter)] mr-1">
@@ -57,7 +57,7 @@ export const WordCard = memo(function WordCard({
           </div>
           
           {/* 배지 */}
-          <div className="flex items-center gap-2 flex-wrap pt-2 border-t-[var(--border-thin)] border-[var(--color-border)]">
+          <div className="flex items-center gap-2 flex-wrap">
             {word.jlptLevel && (
               <Badge variant="jlpt" jlptLevel={word.jlptLevel}>
                 {word.jlptLevel}

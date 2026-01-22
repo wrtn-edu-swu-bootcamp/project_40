@@ -76,10 +76,10 @@ export const Flashcard = memo(function Flashcard({
           </div>
           
           {/* 뜻 */}
-          <div className="flex-1 mb-6">
+          <div className="flex-1 mb-6 pt-6 border-t-[var(--border-base)] border-[var(--color-border)]">
             {word.meanings.map((meaning, idx) => (
-              <div key={idx} className="mb-4">
-                <div className="text-sm text-[var(--color-text-lighter)] mb-2">
+              <div key={idx} className="mb-5 pb-5 border-b-[var(--border-thin)] border-[var(--color-border)] last:border-b-0 last:pb-0">
+                <div className="text-sm text-[var(--color-text-lighter)] mb-2 font-medium">
                   {meaning.partOfSpeech}
                 </div>
                 <ul className="list-disc list-inside space-y-1">

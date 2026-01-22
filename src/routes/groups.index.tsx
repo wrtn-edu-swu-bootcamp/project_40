@@ -18,7 +18,7 @@ function GroupsPage() {
     <div className="min-h-screen bg-[var(--color-ivory)] p-8">
       <div className="max-w-6xl mx-auto">
         {/* 헤더 */}
-        <div className="mb-8">
+        <div className="mb-8 pb-6 border-b-[var(--border-base)] border-[var(--color-border)]">
           <h1 className="text-[var(--font-size-display)] font-semibold text-[var(--color-text)] mb-2 tracking-tight">
             한자 그룹
           </h1>

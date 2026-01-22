@@ -58,9 +58,9 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
   ];
   
   return (
-    <aside className={cn('w-[220px] bg-[var(--color-gray-tint)] border-r-[var(--border-base)] border-[var(--color-border)] p-6 min-h-screen', className)}>
+    <aside className={cn('w-[220px] bg-[var(--color-gray-tint)] p-6 min-h-screen', className)}>
       {/* 로고 */}
-      <div className="mb-8 pb-6 border-b-[var(--border-thin)] border-[var(--color-border)]">
+      <div className="mb-8 pb-6 border-b-[var(--border-base)] border-[var(--color-border)]">
         <h1 className="text-[var(--font-size-h3)] font-semibold text-[var(--color-text)] mb-1">
           일본어 단어장
         </h1>
@@ -91,7 +91,7 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
       </nav>
       
       {/* 데이터 관리 */}
-      <div className="border-t-[var(--border-thin)] border-[var(--color-border)] pt-6 mt-auto">
+      <div className="border-t-[var(--border-base)] border-[var(--color-border)] pt-6 mt-auto">
         <h3 className="text-[var(--font-size-tiny)] font-semibold text-[var(--color-text-light)] mb-3 uppercase tracking-wider">
           데이터 관리
         </h3>
