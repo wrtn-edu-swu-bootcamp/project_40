@@ -14,4 +14,14 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      '/api/jisho': {
+        target: 'https://jisho.org',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/jisho/, '/api'),
+        secure: true,
+      },
+    },
+  },
 });

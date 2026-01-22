@@ -62,7 +62,7 @@ function SearchPage() {
             단어 검색
           </h1>
           <p className="text-[var(--font-size-body)] text-[var(--color-text-light)]">
-            히라가나 또는 한자로 단어를 검색하세요
+            한국어, 히라가나, 한자, 로마자 모두 검색 가능합니다 (214,000+ 단어)
           </p>
         </div>
         

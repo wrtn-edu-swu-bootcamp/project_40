@@ -11,7 +11,7 @@ export interface SearchBarProps {
 
 export const SearchBar = memo(function SearchBar({
   onSearch,
-  placeholder = '단어를 검색하세요 (히라가나 또는 한자)',
+  placeholder = '단어를 검색하세요 (한국어, 히라가나, 한자 모두 가능)',
   className,
 }: SearchBarProps) {
   const [query, setQuery] = useState('');
