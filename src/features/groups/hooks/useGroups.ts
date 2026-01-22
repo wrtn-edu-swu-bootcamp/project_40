@@ -16,7 +16,14 @@ export function useGroups() {
     // 중복 체크
     const existing = await getGroupByCriterion(input.criterion);
     if (existing) {
-      return existing;
+      // 기존 그룹이 있으면 wordIds를 병합
+      const mergedWordIds = [...new Set([...existing.wordIds, ...input.wordIds])];
+      await updateGroup(existing.id, {
+        wordIds: mergedWordIds,
+      });
+      // 업데이트된 그룹 반환
+      const updated = await getGroupByCriterion(input.criterion);
+      return updated || existing;
     }
     
     const now = new Date();

@@ -5,7 +5,9 @@ import { Button } from '@/components/atoms/Button';
 import { Badge } from '@/components/atoms/Badge';
 import { useSearch } from '@/features/search/hooks/useSearch';
 import { useWords } from '@/features/words/hooks/useWords';
+import { useGroups } from '@/features/groups/hooks/useGroups';
 import { suggestGroups } from '@/features/kanji/utils/groupSuggester';
+import { addWordToGroup, updateWord } from '@/lib/db/queries';
 import type { GroupSuggestion } from '@/types/group';
 import type { DictionaryEntry } from '@/lib/data/sample-words';
 
@@ -16,9 +18,12 @@ export const Route = createFileRoute('/search')({
 function SearchPage() {
   const { results, selectedIndex, selectedResult, isSearching, search, setSelectedIndex } = useSearch();
   const { createWord } = useWords();
+  const { createGroup } = useGroups();
   const [isSaving, setIsSaving] = useState(false);
   const [showGroupSuggestions, setShowGroupSuggestions] = useState(false);
   const [groupSuggestions, setGroupSuggestions] = useState<GroupSuggestion[]>([]);
+  const [selectedGroupIndices, setSelectedGroupIndices] = useState<Set<number>>(new Set());
+  const [savedWordId, setSavedWordId] = useState<string | null>(null);
   
   async function handleSave(entry: DictionaryEntry) {
     setIsSaving(true);
@@ -31,11 +36,15 @@ function SearchPage() {
         jlptLevel: entry.jlptLevel,
       });
       
+      setSavedWordId(word.id);
+      
       // 그룹 추천 생성
       const suggestions = await suggestGroups(word.word);
       
       if (suggestions.length > 0) {
         setGroupSuggestions(suggestions);
+        // 기본적으로 모든 그룹 선택
+        setSelectedGroupIndices(new Set(suggestions.map((_, idx) => idx)));
         setShowGroupSuggestions(true);
       } else {
         alert('단어가 저장되었습니다!');
@@ -48,9 +57,61 @@ function SearchPage() {
     }
   }
   
+  function toggleGroupSelection(index: number) {
+    const newSelection = new Set(selectedGroupIndices);
+    if (newSelection.has(index)) {
+      newSelection.delete(index);
+    } else {
+      newSelection.add(index);
+    }
+    setSelectedGroupIndices(newSelection);
+  }
+  
+  async function confirmGroupSuggestions() {
+    if (!savedWordId) return;
+    
+    setIsSaving(true);
+    try {
+      const createdGroupIds: string[] = [];
+      
+      // 선택된 그룹들을 실제로 생성하고 단어 연결
+      for (const index of Array.from(selectedGroupIndices)) {
+        const suggestion = groupSuggestions[index];
+        
+        // 그룹 생성 (중복 체크는 createGroup에서 처리)
+        const group = await createGroup({
+          type: suggestion.type,
+          name: suggestion.name,
+          criterion: suggestion.criterion,
+          wordIds: [savedWordId],
+        });
+        
+        createdGroupIds.push(group.id);
+        
+        // 단어를 그룹에 연결
+        await addWordToGroup(group.id, savedWordId);
+      }
+      
+      // 단어의 groupIds 업데이트
+      await updateWord(savedWordId, {
+        groupIds: createdGroupIds,
+      });
+      
+      alert(`단어가 저장되었고, ${selectedGroupIndices.size}개의 그룹에 추가되었습니다!`);
+      closeGroupSuggestions();
+    } catch (error) {
+      console.error('그룹 생성 중 오류:', error);
+      alert('그룹 생성에 실패했습니다.');
+    } finally {
+      setIsSaving(false);
+    }
+  }
+  
   function closeGroupSuggestions() {
     setShowGroupSuggestions(false);
     setGroupSuggestions([]);
+    setSelectedGroupIndices(new Set());
+    setSavedWordId(null);
   }
   
   return (
@@ -93,28 +154,46 @@ function SearchPage() {
               {results.map((entry, index) => (
                 <div
                   key={index}
-                  className={`p-4 rounded-[var(--radius-md)] border-[var(--border-thin)] cursor-pointer transition-all duration-150 ${
+                  className={`p-4 rounded-[var(--radius-md)] border-[var(--border-thin)] transition-all duration-150 ${
                     selectedIndex === index
                       ? 'border-[var(--color-sky-blue)] bg-[var(--color-sky-tint)] shadow-[var(--shadow-soft)]'
                       : 'border-[var(--color-border)] bg-[var(--color-cream-tint)] hover:border-[var(--color-medium-gray)] hover:shadow-[var(--shadow-subtle)]'
                   }`}
-                  onClick={() => setSelectedIndex(index)}
                 >
-                  <div className="flex items-baseline gap-2 mb-1.5">
-                    <span className="text-[var(--font-size-h2)] font-medium text-[var(--color-text)] japanese">
-                      {entry.word}
-                    </span>
-                    <span className="text-[var(--font-size-small)] text-[var(--color-text-light)] japanese">
-                      {entry.reading}
-                    </span>
-                    {entry.jlptLevel && (
-                      <Badge variant="jlpt" jlptLevel={entry.jlptLevel} className="ml-auto">
-                        {entry.jlptLevel}
-                      </Badge>
-                    )}
+                  <div 
+                    className="cursor-pointer"
+                    onClick={() => setSelectedIndex(index)}
+                  >
+                    <div className="flex items-baseline gap-2 mb-1.5">
+                      <span className="text-[var(--font-size-h2)] font-medium text-[var(--color-text)] japanese">
+                        {entry.word}
+                      </span>
+                      <span className="text-[var(--font-size-small)] text-[var(--color-text-light)] japanese">
+                        {entry.reading}
+                      </span>
+                      {entry.jlptLevel && (
+                        <Badge variant="jlpt" jlptLevel={entry.jlptLevel} className="ml-auto">
+                          {entry.jlptLevel}
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="text-[var(--font-size-body)] text-[var(--color-text)] leading-relaxed">
+                      {entry.meanings[0]?.definitions[0]}
+                    </div>
                   </div>
-                  <div className="text-[var(--font-size-body)] text-[var(--color-text)] leading-relaxed">
-                    {entry.meanings[0]?.definitions[0]}
+                  <div className="mt-3 pt-3 border-t border-[var(--color-border)]">
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSave(entry);
+                      }}
+                      disabled={isSaving}
+                      size="sm"
+                      variant="secondary"
+                      className="w-full"
+                    >
+                      💾 저장
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -188,29 +267,57 @@ function SearchPage() {
                 그룹 추천
               </h2>
               <p className="text-sm text-[var(--color-text-light)] mb-4">
-                이 단어와 관련된 그룹을 발견했습니다!
+                이 단어와 관련된 그룹을 발견했습니다! 추가할 그룹을 선택하세요.
               </p>
               
               <div className="space-y-3 mb-6">
                 {groupSuggestions.map((suggestion, idx) => (
-                  <div
+                  <label
                     key={idx}
-                    className="p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-cream-tint)]"
+                    className={`block p-3 rounded-lg border cursor-pointer transition-all ${
+                      selectedGroupIndices.has(idx)
+                        ? 'border-[var(--color-sky-blue)] bg-[var(--color-sky-tint)]'
+                        : 'border-[var(--color-border)] bg-[var(--color-cream-tint)] hover:border-[var(--color-medium-gray)]'
+                    }`}
                   >
-                    <div className="font-bold text-[var(--color-text)] mb-1 japanese">
-                      {suggestion.name}
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedGroupIndices.has(idx)}
+                        onChange={() => toggleGroupSelection(idx)}
+                        className="mt-1 w-4 h-4 text-[var(--color-sky-blue)] rounded border-gray-300 focus:ring-[var(--color-sky-blue)]"
+                      />
+                      <div className="flex-1">
+                        <div className="font-bold text-[var(--color-text)] mb-1 japanese">
+                          {suggestion.name}
+                        </div>
+                        <div className="text-sm text-[var(--color-text-light)] mb-2">
+                          관련 한자: {suggestion.relatedWords.join(', ')}
+                        </div>
+                        <Badge>{suggestion.count}개 한자</Badge>
+                      </div>
                     </div>
-                    <div className="text-sm text-[var(--color-text-light)] mb-2">
-                      관련 한자: {suggestion.relatedWords.join(', ')}
-                    </div>
-                    <Badge>{suggestion.count}개 한자</Badge>
-                  </div>
+                  </label>
                 ))}
               </div>
               
-              <Button onClick={closeGroupSuggestions} className="w-full">
-                확인
-              </Button>
+              <div className="flex gap-3">
+                <Button
+                  onClick={closeGroupSuggestions}
+                  variant="secondary"
+                  className="flex-1"
+                  disabled={isSaving}
+                >
+                  그룹 없이 저장
+                </Button>
+                <Button
+                  onClick={confirmGroupSuggestions}
+                  className="flex-1"
+                  disabled={isSaving || selectedGroupIndices.size === 0}
+                >
+                  {isSaving ? '저장 중...' : `${selectedGroupIndices.size}개 그룹에 추가`}
+                </Button>
+              </div>
             </div>
           </div>
         )}
