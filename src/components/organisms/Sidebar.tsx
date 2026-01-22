@@ -50,11 +50,11 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
   }
   
   const navItems = [
-    { to: '/', label: '대시보드', icon: '📊' },
-    { to: '/search', label: '단어 검색', icon: '🔍' },
-    { to: '/words', label: '내 단어장', icon: '📚' },
-    { to: '/groups', label: '한자 그룹', icon: '🏷️' },
-    { to: '/study', label: '학습 모드', icon: '✏️' },
+    { to: '/', label: '대시보드' },
+    { to: '/search', label: '단어 검색' },
+    { to: '/words', label: '내 단어장' },
+    { to: '/groups', label: '한자 그룹' },
+    { to: '/study', label: '학습 모드' },
   ];
   
   return (
@@ -82,7 +82,6 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
                   '[&.active]:bg-[var(--color-cream-tint)] [&.active]:text-[var(--color-sky-blue)] [&.active]:border-l-[3px] [&.active]:border-[var(--color-sky-blue)] [&.active]:font-semibold [&.active]:pl-[13px]'
                 )}
               >
-                <span className="text-base">{item.icon}</span>
                 <span>{item.label}</span>
               </Link>
             </li>
@@ -102,7 +101,7 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
             onClick={handleExport}
             className="w-full justify-start text-[var(--font-size-small)]"
           >
-            📥 내보내기
+            내보내기
           </Button>
           <Button
             variant="secondary"
@@ -111,7 +110,7 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
             disabled={isImporting}
             className="w-full justify-start text-[var(--font-size-small)]"
           >
-            📤 {isImporting ? '가져오는 중...' : '가져오기'}
+            {isImporting ? '가져오는 중...' : '가져오기'}
           </Button>
         </div>
       </div>

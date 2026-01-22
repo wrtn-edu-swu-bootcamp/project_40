@@ -54,7 +54,7 @@ export const SearchBar = memo(function SearchBar({
         )}
       </div>
       <Button type="submit" disabled={!query.trim()}>
-        🔍 검색
+        검색
       </Button>
     </form>
   );

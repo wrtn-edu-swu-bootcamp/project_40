@@ -23,11 +23,11 @@ function DashboardPage() {
   );
   
   const stats = [
-    { label: '전체 단어', value: totalWords || 0, color: 'bg-[var(--color-sky-blue)]', icon: '📚' },
-    { label: '새 단어', value: newWords || 0, color: 'bg-[var(--color-light-beige)]', icon: '🆕' },
-    { label: '학습중', value: learningWords || 0, color: 'bg-[var(--color-warning)]', icon: '✏️' },
-    { label: '암기함', value: masteredWords || 0, color: 'bg-[var(--color-success)]', icon: '✅' },
-    { label: '한자 그룹', value: totalGroups || 0, color: 'bg-[var(--color-coral-pink)]', icon: '🏷️' },
+    { label: '전체 단어', value: totalWords || 0, color: 'bg-[var(--color-sky-blue)]' },
+    { label: '새 단어', value: newWords || 0, color: 'bg-[var(--color-light-beige)]' },
+    { label: '학습중', value: learningWords || 0, color: 'bg-[var(--color-warning)]' },
+    { label: '암기함', value: masteredWords || 0, color: 'bg-[var(--color-success)]' },
+    { label: '한자 그룹', value: totalGroups || 0, color: 'bg-[var(--color-coral-pink)]' },
   ];
   
   return (
@@ -50,8 +50,7 @@ function DashboardPage() {
               key={stat.label}
               className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border)] p-6 text-center shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-soft)] transition-all duration-150"
             >
-              <div className="text-3xl mb-3">{stat.icon}</div>
-              <div className="text-[2rem] font-semibold text-[var(--color-text)] mb-1">
+              <div className="text-[2rem] font-semibold text-[var(--color-text)] mb-2">
                 {stat.value}
               </div>
               <div className="text-[var(--font-size-small)] text-[var(--color-text-light)]">
@@ -70,17 +69,17 @@ function DashboardPage() {
             <div className="space-y-3">
               <Link to="/search">
                 <Button className="w-full justify-start">
-                  🔍 새 단어 검색하기
+                  새 단어 검색하기
                 </Button>
               </Link>
               <Link to="/study">
                 <Button variant="secondary" className="w-full justify-start">
-                  ✏️ 학습 모드 시작
+                  학습 모드 시작
                 </Button>
               </Link>
               <Link to="/words">
                 <Button variant="secondary" className="w-full justify-start">
-                  📚 내 단어장 보기
+                  내 단어장 보기
                 </Button>
               </Link>
             </div>
