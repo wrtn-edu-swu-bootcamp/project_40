@@ -320,10 +320,11 @@ function SearchPage() {
                 </Button>
                 <Button
                   onClick={confirmGroupSuggestions}
+                  variant="secondary"
                   className="flex-1"
                   disabled={isSaving || selectedGroupIndices.size === 0}
                 >
-                  {isSaving ? '저장 중...' : `${selectedGroupIndices.size}개 그룹에 추가`}
+                  {isSaving ? '저장 중...' : selectedGroupIndices.size === 0 ? '그룹을 선택하세요' : `${selectedGroupIndices.size}개 그룹에 추가`}
                 </Button>
               </div>
             </div>

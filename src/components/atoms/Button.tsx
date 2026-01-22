@@ -15,7 +15,7 @@ export const Button = memo(function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center rounded-[var(--radius-lg)] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none';
+  const baseStyles = 'inline-flex items-center justify-center rounded-[var(--radius-lg)] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:brightness-95';
   
   const variantStyles = {
     primary: 'bg-[var(--color-sky-blue)] text-white hover:bg-[#7ab0d0] active:scale-[0.98] shadow-[var(--shadow-subtle)]',
