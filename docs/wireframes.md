@@ -1579,104 +1579,150 @@ sequenceDiagram
 
 ---
 
-## 7. 디자인 토큰 (참고)
+## 10. 디자인 토큰 (참고)
+
+> **상세 디자인 가이드**: [design-guide.md](design-guide.md)에서 전체 디자인 시스템을 확인하세요.
 
 ### 10.1 색상 (Color)
 
-**Primary Colors**:
-- Primary: `#3B82F6` (파란색)
-- Primary Dark: `#2563EB`
-- Primary Light: `#60A5FA`
+**디자인 콘셉트**: Midori/Kokuyo 다이어리 빈티지 감성
 
-**Semantic Colors**:
-- Success: `#10B981` (초록)
-- Warning: `#F59E0B` (주황)
-- Error: `#EF4444` (빨강)
-- Info: `#3B82F6` (파란)
+**포인트 컬러** (Point Colors):
+- Sky Blue: `#8fc1e3` - 주요 액션, 링크, 정보
+- Coral Pink: `#e16a84` - 중요/강조, 경고
+- Cream Yellow: `#fadfa4` - 하이라이트, 메모
+- Dark Gray: `#737371` - 본문 텍스트, 라벨
 
-**Neutral Colors**:
-- Gray 50: `#F9FAFB`
-- Gray 100: `#F3F4F6`
-- Gray 200: `#E5E7EB`
-- Gray 300: `#D1D5DB`
-- Gray 400: `#9CA3AF`
-- Gray 500: `#6B7280`
-- Gray 600: `#4B5563`
-- Gray 700: `#374151`
-- Gray 800: `#1F2937`
-- Gray 900: `#111827`
+**배경 틴트** (Background Tints):
+- Sky Tint: `#f2f8f9` - 메인 페이지 배경
+- Pink Tint: `#fdf4f2` - 강조 섹션 배경
+- Cream Tint: `#fefcf8` - 카드 배경 (기본)
+- Gray Tint: `#f5f5f7` - 사이드바, 비활성 영역
 
-**JLPT Level Colors**:
-- N5: `#10B981` (초록)
-- N4: `#3B82F6` (파랑)
-- N3: `#F59E0B` (주황)
-- N2: `#EF4444` (빨강)
-- N1: `#8B5CF6` (보라)
+**중성 컬러** (다이어리 종이 질감):
+- Ivory: `#f5f4ec` - 기본 종이 배경
+- Warm White: `#faf9f5` - 카드 배경
+- Light Beige: `#e8e6df` - 구분선, 테두리
+- Medium Gray: `#b8b6b0` - 보조 선, 플레이스홀더
+- Dark Charcoal: `#4a4a48` - 주요 텍스트
+
+**의미적 색상**:
+- Success: `#6fb491` (성공, 완료)
+- Warning: `#e8a87c` (주의, 대기)
+- Error: `#e16a84` (Coral Pink 사용)
+- Info: `#8fc1e3` (Sky Blue 사용)
+
+**JLPT 레벨 색상**:
+- N5: `#fadfa4` (Cream Yellow)
+- N4: `#8fc1e3` (Sky Blue)
+- N3: `#e16a84` (Coral Pink)
+- N2: `#737371` (Dark Gray)
+- N1: `#5a5a58` (진한 Dark Gray)
 
 ---
 
 ### 10.2 타이포그래피 (Typography)
 
-**폰트 패밀리**:
-- 한글: `Noto Sans KR`, sans-serif
-- 일본어: `Noto Sans JP`, sans-serif
-- 영어: `Inter`, sans-serif
+**폰트 패밀리** (다이어리 느낌의 고딕체):
+- 한글: `KoddiUD OnGothic`, -apple-system, sans-serif
+- 일본어: `BIZ UDGothic`, Hiragino Sans, sans-serif
+- 영어/숫자: `Inter`, Helvetica Neue, sans-serif
+- 코드: `JetBrains Mono`, Consolas, monospace
 
-**폰트 크기**:
-- Display: 48px (화면 타이틀)
-- H1: 32px
-- H2: 24px
-- H3: 20px
-- Body: 16px (기본)
-- Small: 14px
-- Tiny: 12px
+**폰트 크기** (다이어리 느낌의 작은 사이즈):
+- Display: 28px (페이지 타이틀)
+- H1: 22px (섹션 제목)
+- H2: 18px (카드 제목, 단어)
+- H3: 16px (작은 섹션)
+- Body: 14px (기본 본문) ← **기본**
+- Small: 12px (보조 정보)
+- Tiny: 10px (라벨, 날짜)
 
 **폰트 굵기**:
-- Regular: 400
-- Medium: 500
-- SemiBold: 600
-- Bold: 700
+- Regular: 400 (기본 본문)
+- Medium: 500 (강조, 버튼)
+- SemiBold: 600 (제목)
+- Bold: 700 (매우 강조)
 
-**줄 간격**:
-- Tight: 1.25
-- Normal: 1.5
-- Relaxed: 1.75
+**줄 간격** (읽기 편한 여유):
+- Tight: 1.25 (제목, 숫자)
+- Normal: 1.5 (기본 본문)
+- Relaxed: 1.75 (긴 텍스트, 일본어)
+- Loose: 2.0 (매우 여유있는)
+
+**자간**:
+- Tight: -0.02em (기본, 약간 타이트)
+- Normal: 0 (표준)
+- Wide: 0.05em (영문 대문자, 숫자)
 
 ---
 
 ### 10.3 간격 (Spacing)
 
-**기본 단위**: 4px
+**기본 단위**: 4px (다이어리 컴팩트함)
 
-- `xs`: 4px
-- `sm`: 8px
-- `md`: 16px
-- `lg`: 24px
-- `xl`: 32px
-- `2xl`: 48px
-- `3xl`: 64px
+- `xs`: 4px (최소 간격)
+- `sm`: 8px (컴팩트)
+- `md`: 12px (기본 카드 내부)
+- `lg`: 16px (섹션 구분)
+- `xl`: 24px (큰 구분, 카드 간)
+- `2xl`: 32px (페이지 구분)
+- `3xl`: 48px (섹션 간 큰 구분)
 
 ---
 
-### 7.4 모서리 (Border Radius)
+### 10.4 레이아웃 (Layout)
 
-- `none`: 0px
-- `sm`: 4px
-- `md`: 8px
-- `lg`: 12px
-- `xl`: 16px
-- `2xl`: 24px
-- `full`: 9999px (원형)
+**레이아웃 너비** (데스크톱 기준):
+- 사이드바: 220px (작고 깔끔)
+- 최대 콘텐츠 너비: 1280px
+- 좁은 콘텐츠: 960px (읽기용)
+- 카드 기본 너비: 380px
+- 컨테이너 패딩: 24px
+
+**그리드**:
+- 3열: 1200px 이상
+- 2열: 1024px~1199px
+- 1열: 767px 이하
+- 카드 간격: 12px
+
+---
+
+### 10.5 선과 보더 (Borders)
+
+**선 굵기** (다이어리 얇은 선):
+- Thin: 0.5px (그리드 라인, 배경 구분)
+- Base: 1px (기본 구분선)
+- Thick: 2px (강조선, 포커스)
+
+**선 스타일**:
+- 기본: solid (직선만 사용)
+- 점선 사용 금지 (빈티지 느낌 저해)
+- 색상: Light Beige (#e8e6df)
+
+**모서리** (미니멀한 라운드):
+- None: 0px (기본 사각형, 다이어리 느낌)
+- SM: 2px (살짝 부드럽게)
+- MD: 4px (카드)
+- LG: 6px (버튼)
+- XL: 8px (큰 카드)
+- Full: 9999px (원형 - 뱃지, 아바타)
 
 ---
 
 ### 10.6 그림자 (Shadow)
 
-**카드 그림자**:
-- `sm`: `0 1px 2px rgba(0,0,0,0.05)`
-- `md`: `0 4px 6px rgba(0,0,0,0.1)`
-- `lg`: `0 10px 15px rgba(0,0,0,0.1)`
-- `xl`: `0 20px 25px rgba(0,0,0,0.15)`
+**최소화된 깊이** (다이어리는 평면적):
+- None: none (기본 상태)
+- Subtle: `0 1px 2px rgba(115, 115, 113, 0.08)` (카드 기본)
+- Soft: `0 2px 8px rgba(115, 115, 113, 0.12)` (카드 호버)
+- Lifted: `0 4px 12px rgba(115, 115, 113, 0.15)` (드롭다운)
+- Modal: `0 8px 24px rgba(115, 115, 113, 0.18)` (모달)
+
+**주의사항**:
+- 그림자 남용 금지
+- Dark Gray 기반 (검은색 지양)
+- 부드러운 블러
 
 ---
 
