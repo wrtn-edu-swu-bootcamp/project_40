@@ -28,21 +28,21 @@ export const FilterPanel = memo(function FilterPanel({
   ];
   
   return (
-    <div className={cn('bg-white rounded-lg border border-[var(--color-border)] p-4', className)}>
-      <h3 className="text-sm font-bold text-[var(--color-text)] mb-3">
+    <div className={cn('border-[var(--border-thin)] border-[var(--color-border)] p-6', className)}>
+      <h3 className="text-sm font-bold text-[var(--color-text)] mb-5 pb-3 border-b-[var(--border-thin)] border-[var(--color-border)]">
         학습 상태
       </h3>
       
-      <div className="space-y-1">
+      <div className="space-y-0">
         {filters.map((filter) => (
           <button
             key={filter.value}
             onClick={() => onStatusChange(filter.value)}
             className={cn(
-              'w-full text-left px-3 py-2 rounded-md text-sm transition-colors',
+              'w-full text-left px-4 py-3 text-sm transition-colors border-l-[3px]',
               selectedStatus === filter.value
-                ? 'bg-[var(--color-sky-blue)] text-white font-medium'
-                : 'hover:bg-[var(--color-light-beige)] text-[var(--color-text)]'
+                ? 'border-[var(--color-sky-blue)] text-[var(--color-sky-blue)] font-medium'
+                : 'border-transparent hover:border-[var(--color-light-beige)] text-[var(--color-text)]'
             )}
           >
             <div className="flex items-center justify-between">

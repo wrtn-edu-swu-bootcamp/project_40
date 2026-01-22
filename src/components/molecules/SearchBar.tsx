@@ -47,7 +47,7 @@ export const SearchBar = memo(function SearchBar({
           <button
             type="button"
             onClick={handleClear}
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-[var(--radius-md)] hover:bg-[var(--color-gray-tint)] text-[var(--color-medium-gray)] transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center hover:bg-[var(--color-gray-tint)] text-[var(--color-medium-gray)] transition-colors"
           >
             ×
           </button>

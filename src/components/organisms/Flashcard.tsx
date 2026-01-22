@@ -32,8 +32,8 @@ export const Flashcard = memo(function Flashcard({
         <div
           className={cn(
             'absolute inset-0 backface-hidden',
-            'bg-white rounded-2xl border-2 border-[var(--color-border)] shadow-lg',
-            'flex flex-col items-center justify-center p-8'
+            'bg-[var(--color-ivory)] border-[var(--border-base)] border-[var(--color-border)]',
+            'flex flex-col items-center justify-center p-12'
           )}
           style={{ backfaceVisibility: 'hidden' }}
         >
@@ -57,8 +57,8 @@ export const Flashcard = memo(function Flashcard({
         <div
           className={cn(
             'absolute inset-0 backface-hidden',
-            'bg-[var(--color-cream-tint)] rounded-2xl border-2 border-[var(--color-sky-blue)] shadow-lg',
-            'flex flex-col p-8 overflow-y-auto'
+            'bg-[var(--color-ivory)] border-[var(--border-base)] border-[var(--color-sky-blue)]',
+            'flex flex-col p-12 overflow-y-auto'
           )}
           style={{
             backfaceVisibility: 'hidden',

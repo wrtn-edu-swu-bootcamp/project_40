@@ -15,14 +15,14 @@ function GroupsPage() {
   }
   
   return (
-    <div className="min-h-screen bg-[var(--color-ivory)] p-6">
+    <div className="min-h-screen bg-[var(--color-ivory)] p-8">
       <div className="max-w-6xl mx-auto">
         {/* 헤더 */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-[var(--color-text)] mb-2">
+        <div className="mb-8">
+          <h1 className="text-[var(--font-size-display)] font-semibold text-[var(--color-text)] mb-2 tracking-tight">
             한자 그룹
           </h1>
-          <p className="text-sm text-[var(--color-text-light)]">
+          <p className="text-[var(--font-size-body)] text-[var(--color-text-light)]">
             비슷한 한자끼리 자동으로 그룹화됩니다
           </p>
         </div>
@@ -41,7 +41,7 @@ function GroupsPage() {
           </div>
         )}
         
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-6">
           {groups.map((group) => (
             <GroupCard
               key={group.id}

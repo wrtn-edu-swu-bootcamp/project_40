@@ -24,9 +24,9 @@ export const WordCard = memo(function WordCard({
   return (
     <div
       className={cn(
-        'p-4 rounded-lg border bg-[var(--color-cream-tint)] transition-all cursor-pointer',
-        'hover:shadow-md hover:border-[var(--color-sky-blue)]',
-        selected && 'border-[var(--color-sky-blue)] shadow-md',
+        'py-5 px-6 border-[var(--border-thin)] transition-all cursor-pointer',
+        'hover:border-[var(--color-sky-blue)]',
+        selected && 'border-[var(--color-sky-blue)] border-[var(--border-thick)]',
         !selected && 'border-[var(--color-border)]',
         className
       )}
@@ -35,7 +35,7 @@ export const WordCard = memo(function WordCard({
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           {/* 단어 및 읽기 */}
-          <div className="flex items-baseline gap-2 mb-2">
+          <div className="flex items-baseline gap-2 mb-4">
             <h3 className="text-lg font-bold text-[var(--color-text)] japanese">
               {word.word}
             </h3>
@@ -45,9 +45,9 @@ export const WordCard = memo(function WordCard({
           </div>
           
           {/* 뜻 */}
-          <div className="mb-2">
+          <div className="mb-4">
             {word.meanings.slice(0, 2).map((meaning, idx) => (
-              <div key={idx} className="text-sm text-[var(--color-text)]">
+              <div key={idx} className="text-sm text-[var(--color-text)] leading-relaxed">
                 <span className="text-[var(--color-text-lighter)] mr-1">
                   {meaning.partOfSpeech}
                 </span>
@@ -57,7 +57,7 @@ export const WordCard = memo(function WordCard({
           </div>
           
           {/* 배지 */}
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap pt-2 border-t-[var(--border-thin)] border-[var(--color-border)]">
             {word.jlptLevel && (
               <Badge variant="jlpt" jlptLevel={word.jlptLevel}>
                 {word.jlptLevel}

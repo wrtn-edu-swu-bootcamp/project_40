@@ -136,13 +136,15 @@ function SearchPage() {
         </div>
         
         {/* 검색바 */}
-        <SearchBar onSearch={search} className="mb-8" />
+        <div className="mb-10">
+          <SearchBar onSearch={search} />
+        </div>
         
         {/* 2단 레이아웃 */}
         <div className="grid grid-cols-2 gap-6">
           {/* 좌측: 검색 결과 리스트 */}
-          <div className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border)] p-5 h-[650px] overflow-y-auto shadow-[var(--shadow-subtle)]">
-            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-4">
+          <div className="border-[var(--border-thin)] border-[var(--color-border)] p-8 h-[650px] overflow-y-auto">
+            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-6 pb-4 border-b-[var(--border-thin)] border-[var(--color-border)]">
               검색 결과 ({results.length})
             </h2>
             
@@ -158,14 +160,14 @@ function SearchPage() {
               </div>
             )}
             
-            <div className="space-y-3">
+            <div className="space-y-4">
               {results.map((entry, index) => (
                 <div
                   key={index}
-                  className={`p-4 rounded-[var(--radius-md)] border-[var(--border-thin)] transition-all duration-150 ${
+                  className={`py-5 px-6 border-[var(--border-thin)] transition-all duration-150 ${
                     selectedIndex === index
-                      ? 'border-[var(--color-sky-blue)] bg-[var(--color-sky-tint)] shadow-[var(--shadow-soft)]'
-                      : 'border-[var(--color-border)] bg-[var(--color-cream-tint)] hover:border-[var(--color-medium-gray)] hover:shadow-[var(--shadow-subtle)]'
+                      ? 'border-[var(--color-sky-blue)]'
+                      : 'border-[var(--color-border)] hover:border-[var(--color-medium-gray)]'
                   }`}
                 >
                   <div 
@@ -189,7 +191,7 @@ function SearchPage() {
                       {entry.meanings[0]?.definitions[0]}
                     </div>
                   </div>
-                  <div className="mt-3 pt-3 border-t border-[var(--color-border)]">
+                  <div className="mt-5 pt-4 border-t-[var(--border-thin)] border-[var(--color-border)]">
                     <Button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -209,11 +211,11 @@ function SearchPage() {
           </div>
           
           {/* 우측: 선택한 단어 상세 */}
-          <div className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border)] p-6 h-[650px] overflow-y-auto shadow-[var(--shadow-subtle)]">
+          <div className="border-[var(--border-thin)] border-[var(--color-border)] p-8 h-[650px] overflow-y-auto">
             {selectedResult ? (
               <>
-                <div className="mb-6">
-                  <div className="flex items-baseline gap-3 mb-4">
+                <div className="mb-8 pb-6 border-b-[var(--border-thin)] border-[var(--color-border)]">
+                  <div className="flex items-baseline gap-3 mb-5">
                     <h2 className="text-[2rem] font-semibold text-[var(--color-text)] japanese">
                       {selectedResult.word}
                     </h2>
@@ -230,12 +232,12 @@ function SearchPage() {
                 </div>
                 
                 {/* 뜻 */}
-                <div className="mb-6">
-                  <h3 className="text-[var(--font-size-body)] font-semibold text-[var(--color-text)] mb-3">
+                <div className="mb-8">
+                  <h3 className="text-[var(--font-size-body)] font-semibold text-[var(--color-text)] mb-4 pb-3 border-b-[var(--border-thin)] border-[var(--color-border)]">
                     의미
                   </h3>
-                  {selectedResult.meanings.map((meaning, idx) => (
-                    <div key={idx} className="mb-4 p-3 rounded-[var(--radius-md)] bg-[var(--color-cream-tint)]">
+                    {selectedResult.meanings.map((meaning, idx) => (
+                    <div key={idx} className="mb-5 py-4 px-5 border-[var(--border-thin)] border-[var(--color-border)]">
                       <div className="text-[var(--font-size-small)] text-[var(--color-text-lighter)] mb-2 font-medium">
                         {meaning.partOfSpeech}
                       </div>
@@ -270,7 +272,7 @@ function SearchPage() {
         {/* 그룹 추천 모달 */}
         {showGroupSuggestions && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
+            <div className="bg-[var(--color-ivory)] border-[var(--border-base)] border-[var(--color-border)] p-8 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
               <h2 className="text-xl font-bold text-[var(--color-text)] mb-4">
                 그룹 추천
               </h2>
@@ -278,14 +280,14 @@ function SearchPage() {
                 이 단어와 관련된 그룹을 발견했습니다! 추가할 그룹을 선택하세요.
               </p>
               
-              <div className="space-y-3 mb-6">
+              <div className="space-y-4 mb-8">
                 {groupSuggestions.map((suggestion, idx) => (
                   <label
                     key={idx}
-                    className={`block p-3 rounded-lg border cursor-pointer transition-all ${
+                    className={`block py-4 px-5 border-[var(--border-thin)] cursor-pointer transition-all ${
                       selectedGroupIndices.has(idx)
-                        ? 'border-[var(--color-sky-blue)] bg-[var(--color-sky-tint)]'
-                        : 'border-[var(--color-border)] bg-[var(--color-cream-tint)] hover:border-[var(--color-medium-gray)]'
+                        ? 'border-[var(--color-sky-blue)]'
+                        : 'border-[var(--color-border)] hover:border-[var(--color-medium-gray)]'
                     }`}
                   >
                     <div className="flex items-start gap-3">
@@ -293,7 +295,7 @@ function SearchPage() {
                         type="checkbox"
                         checked={selectedGroupIndices.has(idx)}
                         onChange={() => toggleGroupSelection(idx)}
-                        className="mt-1 w-4 h-4 text-[var(--color-sky-blue)] rounded border-gray-300 focus:ring-[var(--color-sky-blue)]"
+                        className="mt-1 w-4 h-4 text-[var(--color-sky-blue)] border-gray-300 focus:ring-[var(--color-sky-blue)]"
                       />
                       <div className="flex-1">
                         <div className="font-bold text-[var(--color-text)] mb-1 japanese">

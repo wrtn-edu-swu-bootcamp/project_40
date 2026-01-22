@@ -19,7 +19,7 @@ export const Checkbox = memo(function Checkbox({
         type="checkbox"
         id={checkboxId}
         className={cn(
-          'w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-sky-blue)]',
+          'w-4 h-4 border-[var(--color-border)] text-[var(--color-sky-blue)]',
           'focus:ring-2 focus:ring-[var(--color-sky-blue)] focus:ring-offset-0',
           'cursor-pointer disabled:cursor-not-allowed disabled:opacity-50'
         )}

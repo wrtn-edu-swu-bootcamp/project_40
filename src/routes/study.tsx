@@ -74,18 +74,18 @@ function StudyPage() {
     <div className="min-h-screen bg-[var(--color-ivory)] p-6">
       <div className="max-w-3xl mx-auto">
         {/* 헤더 */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <h1 className="text-2xl font-bold text-[var(--color-text)]">
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-[var(--font-size-display)] font-semibold text-[var(--color-text)] tracking-tight">
               학습 모드
             </h1>
-            <div className="text-sm text-[var(--color-text-light)]">
+            <div className="text-[var(--font-size-body)] text-[var(--color-text-light)]">
               {currentIndex + 1} / {studyWords.length}
             </div>
           </div>
           
           {/* 진행률 바 */}
-          <div className="w-full h-2 bg-[var(--color-light-beige)] rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-[var(--color-light-beige)] overflow-hidden">
             <div
               className="h-full bg-[var(--color-sky-blue)] transition-all duration-300"
               style={{ width: `${progress}%` }}
@@ -94,7 +94,7 @@ function StudyPage() {
         </div>
         
         {/* 플래시카드 */}
-        <Flashcard word={currentWord} className="mb-6" />
+        <Flashcard word={currentWord} className="mb-8" />
         
         {/* 컨트롤 */}
         <div className="flex items-center justify-between gap-4">
@@ -123,8 +123,8 @@ function StudyPage() {
         
         {/* 학습 완료 */}
         {currentIndex === studyWords.length - 1 && (
-          <div className="mt-6 p-4 rounded-lg bg-[var(--color-success)] text-white text-center">
-            <p className="font-bold mb-2">마지막 카드입니다!</p>
+          <div className="mt-8 py-5 px-6 border-[var(--border-base)] border-[var(--color-success)] text-[var(--color-success)] text-center">
+            <p className="font-bold mb-3">마지막 카드입니다!</p>
             <p className="text-sm">모든 단어를 학습했습니다. 수고하셨습니다!</p>
           </div>
         )}

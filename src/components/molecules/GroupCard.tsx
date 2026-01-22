@@ -26,20 +26,20 @@ export const GroupCard = memo(function GroupCard({
   return (
     <div
       className={cn(
-        'p-4 rounded-lg border border-[var(--color-border)] bg-[var(--color-cream-tint)]',
-        'hover:shadow-md hover:border-[var(--color-sky-blue)] transition-all cursor-pointer',
+        'py-6 px-6 border-[var(--border-thin)] border-[var(--color-border)]',
+        'hover:border-[var(--color-sky-blue)] transition-all cursor-pointer',
         className
       )}
       onClick={onClick}
     >
-      <div className="mb-2">
-        <h3 className="text-base font-bold text-[var(--color-text)] mb-1 japanese">
+      <div className="mb-4">
+        <h3 className="text-base font-bold text-[var(--color-text)] mb-3 japanese">
           {group.name}
         </h3>
         <Badge>{typeLabels[group.type]}</Badge>
       </div>
       
-      <div className="text-sm text-[var(--color-text-light)]">
+      <div className="text-sm text-[var(--color-text-light)] pt-3 border-t-[var(--border-thin)] border-[var(--color-border)]">
         {wordCount !== undefined ? `${wordCount}개 단어` : `${group.wordIds.length}개 단어`}
       </div>
     </div>

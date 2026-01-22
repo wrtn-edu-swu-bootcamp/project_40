@@ -15,7 +15,7 @@ export const Badge = memo(function Badge({
   jlptLevel,
   className,
 }: BadgeProps) {
-  const baseStyles = 'inline-flex items-center justify-center h-5 px-2 rounded-[var(--radius-md)] text-[var(--font-size-tiny)] font-semibold tracking-wider';
+  const baseStyles = 'inline-flex items-center justify-center h-5 px-2 text-[var(--font-size-tiny)] font-semibold tracking-wider';
   
   const jlptColors: Record<JlptLevel, string> = {
     N5: 'bg-[var(--color-gray-tint)] text-[var(--color-dark-gray)]',

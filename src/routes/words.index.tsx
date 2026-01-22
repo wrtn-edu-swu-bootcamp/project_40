@@ -68,8 +68,8 @@ function WordsPage() {
           
           {/* 중앙: 단어 목록 */}
           <div className="col-span-5">
-            <div className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border)] p-5 h-[700px] overflow-y-auto shadow-[var(--shadow-subtle)]">
-              <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-4">
+            <div className="border-[var(--border-thin)] border-[var(--color-border)] p-8 h-[700px] overflow-y-auto">
+              <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-6 pb-4 border-b-[var(--border-thin)] border-[var(--color-border)]">
                 단어 목록 ({filteredWords.length})
               </h2>
               
@@ -87,7 +87,7 @@ function WordsPage() {
                 </div>
               )}
               
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {filteredWords.map((word) => (
                   <WordCard
                     key={word.id}
@@ -104,11 +104,11 @@ function WordsPage() {
           
           {/* 우측: 단어 상세 */}
           <div className="col-span-5">
-            <div className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border)] p-6 h-[700px] overflow-y-auto shadow-[var(--shadow-subtle)]">
+            <div className="border-[var(--border-thin)] border-[var(--color-border)] p-8 h-[700px] overflow-y-auto">
               {selectedWord ? (
                 <>
-                  <div className="mb-6">
-                    <div className="flex items-baseline gap-3 mb-4">
+                  <div className="mb-8 pb-6 border-b-[var(--border-thin)] border-[var(--color-border)]">
+                    <div className="flex items-baseline gap-3 mb-5">
                       <h2 className="text-[2rem] font-semibold text-[var(--color-text)] japanese">
                         {selectedWord.word}
                       </h2>
@@ -119,11 +119,11 @@ function WordsPage() {
                     
                     <div className="flex items-center gap-2 flex-wrap">
                       {selectedWord.jlptLevel && (
-                        <span className="px-2 py-0.5 rounded text-xs font-medium bg-[var(--color-jlpt-n3)] text-[var(--color-text)]">
-                          {selectedWord.jlptLevel}
-                        </span>
+                      <span className="px-2 py-0.5 text-xs font-medium bg-[var(--color-jlpt-n3)] text-[var(--color-text)]">
+                        {selectedWord.jlptLevel}
+                      </span>
                       )}
-                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                      <span className={`px-2 py-0.5 text-xs font-medium ${
                         selectedWord.studyStatus === 'mastered'
                           ? 'bg-[var(--color-success)] text-white'
                           : selectedWord.studyStatus === 'learning'
@@ -137,12 +137,12 @@ function WordsPage() {
                   </div>
                   
                   {/* 뜻 */}
-                  <div className="mb-6">
-                    <h3 className="text-[var(--font-size-body)] font-semibold text-[var(--color-text)] mb-3">
+                  <div className="mb-8">
+                    <h3 className="text-[var(--font-size-body)] font-semibold text-[var(--color-text)] mb-4 pb-3 border-b-[var(--border-thin)] border-[var(--color-border)]">
                       의미
                     </h3>
                     {selectedWord.meanings.map((meaning, idx) => (
-                      <div key={idx} className="mb-4 p-3 rounded-[var(--radius-md)] bg-[var(--color-cream-tint)]">
+                      <div key={idx} className="mb-5 py-4 px-5 border-[var(--border-thin)] border-[var(--color-border)]">
                         <div className="text-[var(--font-size-small)] text-[var(--color-text-lighter)] mb-2 font-medium">
                           {meaning.partOfSpeech}
                         </div>
@@ -159,15 +159,15 @@ function WordsPage() {
                   
                   {/* 한자 정보 */}
                   {selectedWord.kanji.length > 0 && (
-                    <div className="mb-6">
-                      <h3 className="text-[var(--font-size-body)] font-semibold text-[var(--color-text)] mb-3">
+                    <div className="mb-8">
+                      <h3 className="text-[var(--font-size-body)] font-semibold text-[var(--color-text)] mb-4 pb-3 border-b-[var(--border-thin)] border-[var(--color-border)]">
                         포함된 한자
                       </h3>
                       <div className="flex gap-2 flex-wrap">
                         {selectedWord.kanji.map((k, idx) => (
                           <span
                             key={idx}
-                            className="px-4 py-2 rounded-[var(--radius-md)] bg-[var(--color-sky-tint)] border border-[var(--color-sky-blue)] text-[1.125rem] japanese font-medium"
+                            className="px-4 py-2 bg-[var(--color-sky-tint)] border-[var(--border-base)] border-[var(--color-sky-blue)] text-[1.125rem] japanese font-medium"
                           >
                             {k}
                           </span>
@@ -177,8 +177,8 @@ function WordsPage() {
                   )}
                   
                   {/* 학습 통계 */}
-                  <div className="mb-6 p-5 rounded-[var(--radius-lg)] bg-[var(--color-info-bg)] border border-[var(--color-sky-blue)]">
-                    <h3 className="text-[var(--font-size-body)] font-semibold text-[var(--color-text)] mb-3">
+                  <div className="mb-8 py-6 px-5 border-[var(--border-base)] border-[var(--color-sky-blue)]">
+                    <h3 className="text-[var(--font-size-body)] font-semibold text-[var(--color-text)] mb-5 pb-3 border-b-[var(--border-thin)] border-[var(--color-sky-blue)]">
                       학습 기록
                     </h3>
                     <div className="grid grid-cols-2 gap-4 text-[var(--font-size-body)]">

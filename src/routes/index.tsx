@@ -44,13 +44,13 @@ function DashboardPage() {
         </div>
         
         {/* 통계 카드 */}
-        <div className="grid grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-5 gap-6 mb-12">
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border)] p-6 text-center shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-soft)] transition-all duration-150"
+              className="border-[var(--border-thin)] border-[var(--color-border)] p-8 text-center transition-all duration-150"
             >
-              <div className="text-[2rem] font-semibold text-[var(--color-text)] mb-2">
+              <div className="text-[2rem] font-semibold text-[var(--color-text)] mb-3">
                 {stat.value}
               </div>
               <div className="text-[var(--font-size-small)] text-[var(--color-text-light)]">
@@ -61,12 +61,12 @@ function DashboardPage() {
         </div>
         
         {/* 빠른 액션 */}
-        <div className="grid grid-cols-2 gap-6 mb-8">
-          <div className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border)] p-6 shadow-[var(--shadow-subtle)]">
-            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-4">
+        <div className="grid grid-cols-2 gap-8 mb-12">
+          <div className="border-[var(--border-thin)] border-[var(--color-border)] p-8">
+            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-6 pb-4 border-b-[var(--border-thin)] border-[var(--color-border)]">
               빠른 시작
             </h2>
-            <div className="space-y-3">
+            <div className="space-y-4">
               <Link to="/search">
                 <Button className="w-full justify-start">
                   새 단어 검색하기
@@ -86,8 +86,8 @@ function DashboardPage() {
           </div>
           
           {/* 최근 추가한 단어 */}
-          <div className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border)] p-6 shadow-[var(--shadow-subtle)]">
-            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-4">
+          <div className="border-[var(--border-thin)] border-[var(--color-border)] p-8">
+            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-6 pb-4 border-b-[var(--border-thin)] border-[var(--color-border)]">
               최근 추가한 단어
             </h2>
             {!recentWords || recentWords.length === 0 ? (
@@ -95,13 +95,13 @@ function DashboardPage() {
                 아직 저장된 단어가 없습니다
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {recentWords.map((word) => (
                   <Link
                     key={word.id}
                     to="/words/$wordId"
                     params={{ wordId: word.id }}
-                    className="block p-3 rounded-[var(--radius-md)] border-[var(--border-thin)] border-[var(--color-border)] bg-[var(--color-cream-tint)] hover:border-[var(--color-sky-blue)] hover:shadow-[var(--shadow-subtle)] transition-all duration-150"
+                    className="block py-4 px-5 border-[var(--border-thin)] border-[var(--color-border)] hover:border-[var(--color-sky-blue)] transition-all duration-150"
                   >
                     <div className="flex items-baseline gap-2 mb-1.5">
                       <span className="font-medium text-[var(--font-size-h3)] text-[var(--color-text)] japanese">
@@ -130,8 +130,8 @@ function DashboardPage() {
         
         {/* 학습 진도 */}
         {totalWords && totalWords > 0 && (
-          <div className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border)] p-6 shadow-[var(--shadow-subtle)]">
-            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-4">
+          <div className="border-[var(--border-thin)] border-[var(--color-border)] p-8">
+            <h2 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-6 pb-4 border-b-[var(--border-thin)] border-[var(--color-border)]">
               학습 진도
             </h2>
             <div className="space-y-4">
@@ -142,29 +142,29 @@ function DashboardPage() {
                     {Math.round(((masteredWords || 0) / totalWords) * 100)}%
                   </span>
                 </div>
-                <div className="w-full h-2 bg-[var(--color-light-beige)] rounded-[var(--radius-full)] overflow-hidden">
+                <div className="w-full h-2 bg-[var(--color-light-beige)] overflow-hidden">
                   <div
-                    className="h-full bg-[var(--color-success)] transition-all duration-300 rounded-[var(--radius-full)]"
+                    className="h-full bg-[var(--color-success)] transition-all duration-300"
                     style={{ width: `${((masteredWords || 0) / totalWords) * 100}%` }}
                   />
                 </div>
               </div>
               
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="p-4 rounded-[var(--radius-md)] bg-[var(--color-cream-tint)] border border-[var(--color-border)]">
-                  <div className="text-[1.5rem] font-semibold text-[var(--color-text)]">
+              <div className="grid grid-cols-3 gap-0 text-center border-[var(--border-thin)] border-[var(--color-border)]">
+                <div className="py-6 px-4 border-r-[var(--border-thin)] border-[var(--color-border)]">
+                  <div className="text-[1.5rem] font-semibold text-[var(--color-text)] mb-2">
                     {newWords || 0}
                   </div>
                   <div className="text-[var(--font-size-small)] text-[var(--color-text-light)]">새 단어</div>
                 </div>
-                <div className="p-4 rounded-[var(--radius-md)] bg-[var(--color-cream-tint)] border border-[var(--color-border)]">
-                  <div className="text-[1.5rem] font-semibold text-[var(--color-text)]">
+                <div className="py-6 px-4 border-r-[var(--border-thin)] border-[var(--color-border)]">
+                  <div className="text-[1.5rem] font-semibold text-[var(--color-text)] mb-2">
                     {learningWords || 0}
                   </div>
                   <div className="text-[var(--font-size-small)] text-[var(--color-text-light)]">학습중</div>
                 </div>
-                <div className="p-4 rounded-[var(--radius-md)] bg-[var(--color-cream-tint)] border border-[var(--color-border)]">
-                  <div className="text-[1.5rem] font-semibold text-[var(--color-text)]">
+                <div className="py-6 px-4">
+                  <div className="text-[1.5rem] font-semibold text-[var(--color-text)] mb-2">
                     {masteredWords || 0}
                   </div>
                   <div className="text-[var(--font-size-small)] text-[var(--color-text-light)]">암기함</div>

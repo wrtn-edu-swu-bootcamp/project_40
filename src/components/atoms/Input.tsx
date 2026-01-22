@@ -13,14 +13,15 @@ export const Input = memo(function Input({
   return (
     <input
       className={cn(
-        'w-full h-9 px-3 py-2 text-[var(--font-size-body)] rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-warm-white)] text-[var(--color-text)] transition-all duration-150',
+        'w-full h-9 px-2 py-2 text-[var(--font-size-body)] bg-transparent text-[var(--color-text)] transition-all duration-150',
         'font-[var(--font-family-primary)]',
+        'border-0 border-b-[var(--border-base)] border-[var(--color-border)]',
         'placeholder:text-[var(--color-medium-gray)] placeholder:opacity-60',
         'hover:border-[var(--color-medium-gray)]',
-        'focus:outline-none focus:border-[var(--color-sky-blue)] focus:bg-white focus:shadow-[0_0_0_3px_rgba(143,193,227,0.2)]',
+        'focus:outline-none focus:border-b-[var(--border-thick)] focus:border-[var(--color-sky-blue)] focus:bg-transparent',
         'disabled:bg-[var(--color-gray-tint)] disabled:opacity-60 disabled:cursor-not-allowed',
         error
-          ? 'border-[var(--color-coral-pink)] focus:border-[var(--color-coral-pink)] focus:shadow-[0_0_0_3px_rgba(225,106,132,0.2)]'
+          ? 'border-[var(--color-coral-pink)] focus:border-[var(--color-coral-pink)]'
           : '',
         className
       )}

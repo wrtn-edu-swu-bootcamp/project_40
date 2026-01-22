@@ -47,10 +47,10 @@ function GroupDetailPage() {
   };
   
   return (
-    <div className="min-h-screen bg-[var(--color-ivory)] p-6">
+    <div className="min-h-screen bg-[var(--color-ivory)] p-8">
       <div className="max-w-4xl mx-auto">
         {/* 헤더 */}
-        <div className="mb-6">
+        <div className="mb-8">
           <Button
             variant="ghost"
             onClick={() => window.history.back()}
@@ -60,13 +60,13 @@ function GroupDetailPage() {
           </Button>
           
           <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-2xl font-bold text-[var(--color-text)] japanese">
+            <h1 className="text-[var(--font-size-display)] font-semibold text-[var(--color-text)] tracking-tight japanese">
               {group.name}
             </h1>
             <Badge>{typeLabels[group.type]}</Badge>
           </div>
           
-          <p className="text-sm text-[var(--color-text-light)]">
+          <p className="text-[var(--font-size-body)] text-[var(--color-text-light)]">
             {words?.length || 0}개의 단어
           </p>
         </div>
@@ -77,7 +77,7 @@ function GroupDetailPage() {
             이 그룹에 속한 단어가 없습니다
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {words.map((word) => (
               <WordCard
                 key={word.id}
