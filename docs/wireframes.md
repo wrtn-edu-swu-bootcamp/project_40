@@ -1593,14 +1593,14 @@ sequenceDiagram
 - Cream Yellow: `#fadfa4` - 하이라이트, 메모
 - Dark Gray: `#737371` - 본문 텍스트, 라벨
 
-**배경 틴트** (Background Tints):
-- Sky Tint: `#f2f8f9` - 메인 페이지 배경
-- Pink Tint: `#fdf4f2` - 강조 섹션 배경
-- Cream Tint: `#fefcf8` - 카드 배경 (기본)
-- Gray Tint: `#f5f5f7` - 사이드바, 비활성 영역
+**세컨더리 컬러** (Secondary Colors - 포인트 컬러 보조):
+- Sky Tint: `#f2f8f9` - 정보 강조 배경
+- Pink Tint: `#fdf4f2` - 중요 알림 배경
+- Cream Tint: `#fefcf8` - 카드 배경
+- Gray Tint: `#f5f5f7` - 사이드바, N5/N4 뱃지
 
 **중성 컬러** (다이어리 종이 질감):
-- Ivory: `#f5f4ec` - 기본 종이 배경
+- Ivory: `#f5f4ec` - **메인 페이지 배경** (기본)
 - Warm White: `#faf9f5` - 카드 배경
 - Light Beige: `#e8e6df` - 구분선, 테두리
 - Medium Gray: `#b8b6b0` - 보조 선, 플레이스홀더
@@ -1613,11 +1613,11 @@ sequenceDiagram
 - Info: `#8fc1e3` (Sky Blue 사용)
 
 **JLPT 레벨 색상**:
-- N5: `#fadfa4` (Cream Yellow)
-- N4: `#8fc1e3` (Sky Blue)
-- N3: `#e16a84` (Coral Pink)
-- N2: `#737371` (Dark Gray)
-- N1: `#5a5a58` (진한 Dark Gray)
+- N5: `#f5f5f7` (Gray Tint)
+- N4: `#f5f5f7` (Gray Tint)
+- N3: `#fadfa4` (Cream Yellow)
+- N2: `#8fc1e3` (Sky Blue)
+- N1: `#e16a84` (Coral Pink)
 
 ---
 

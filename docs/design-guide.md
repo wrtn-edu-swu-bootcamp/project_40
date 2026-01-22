@@ -69,10 +69,10 @@
 ┌─────────────┬──────────┬────────────────────────────────────┐
 │ 색상 이름    │ HEX      │ 용도                               │
 ├─────────────┼──────────┼────────────────────────────────────┤
-│ Sky Blue    │ #8fc1e3  │ 주요 액션, 링크, 정보 표시         │
-│ Coral Pink  │ #e16a84  │ 중요/강조, 경고, 일요일            │
-│ Cream Yellow│ #fadfa4  │ 하이라이트, 메모 영역, N5 레벨     │
-│ Dark Gray   │ #737371  │ 본문 텍스트, 라벨, N2 레벨         │
+│ Sky Blue    │ #8fc1e3  │ 주요 액션, 링크, 정보 표시, N2 레벨│
+│ Coral Pink  │ #e16a84  │ 중요/강조, 경고, N1 레벨           │
+│ Cream Yellow│ #fadfa4  │ 하이라이트, 메모 영역, N3 레벨     │
+│ Dark Gray   │ #737371  │ 본문 텍스트, 라벨                  │
 └─────────────┴──────────┴────────────────────────────────────┘
 ```
 
@@ -85,28 +85,30 @@
 [Dark Gray - #737371]    ████████  기본 텍스트, 아이콘
 ```
 
-### 2.2 배경 컬러 (Background Tints)
+### 2.2 세컨더리 컬러 (Secondary Colors)
 
-포인트 컬러의 연한 버전으로, 카드나 섹션 배경에 사용합니다.
+포인트 컬러를 뒷받침하는 보조 색상입니다. 특정 영역을 강조하거나 구분할 때 사용합니다.
+
+> **참고**: 메인 페이지 배경은 Ivory (#f5f4ec)를 사용합니다. Secondary Colors는 액센트 영역에 사용합니다.
 
 ```
 ┌─────────────┬──────────┬────────────────────────────────────┐
 │ 색상 이름    │ HEX      │ 용도                               │
 ├─────────────┼──────────┼────────────────────────────────────┤
-│ Sky Tint    │ #f2f8f9  │ 메인 페이지 배경                   │
-│ Pink Tint   │ #fdf4f2  │ 강조 섹션 배경                     │
-│ Cream Tint  │ #fefcf8  │ 카드 배경 (기본)                   │
-│ Gray Tint   │ #f5f5f7  │ 사이드바, 비활성 영역              │
+│ Sky Tint    │ #f2f8f9  │ 정보 강조 배경, 하이라이트 영역    │
+│ Pink Tint   │ #fdf4f2  │ 중요 알림 배경, 경고 섹션          │
+│ Cream Tint  │ #fefcf8  │ 카드 배경, 메모 영역               │
+│ Gray Tint   │ #f5f5f7  │ 사이드바, 비활성 영역, N5/N4 뱃지  │
 └─────────────┴──────────┴────────────────────────────────────┘
 ```
 
-**배경색 사용 예시**:
+**세컨더리 컬러 사용 예시**:
 
 ```
-[Sky Tint - #f2f8f9]     ████████  대시보드 배경
+[Sky Tint - #f2f8f9]     ████████  정보 섹션 강조
 [Pink Tint - #fdf4f2]    ████████  중요 공지 배경
 [Cream Tint - #fefcf8]   ████████  단어 카드 배경
-[Gray Tint - #f5f5f7]    ████████  사이드바 배경
+[Gray Tint - #f5f5f7]    ████████  사이드바, 초급 뱃지
 ```
 
 ### 2.3 중성 컬러 팔레트 (Neutral Colors)
@@ -117,7 +119,7 @@
 ┌──────────────┬──────────┬────────────────────────────────────┐
 │ 색상 이름     │ HEX      │ 용도                               │
 ├──────────────┼──────────┼────────────────────────────────────┤
-│ Ivory        │ #f5f4ec  │ 기본 종이 배경                     │
+│ Ivory        │ #f5f4ec  │ 메인 페이지 배경 (기본)            │
 │ Warm White   │ #faf9f5  │ 카드 배경                          │
 │ Light Beige  │ #e8e6df  │ 구분선, 테두리                     │
 │ Medium Gray  │ #b8b6b0  │ 보조 선, 플레이스홀더              │
@@ -169,7 +171,7 @@
   --color-cream-yellow: #fadfa4;
   --color-dark-gray: #737371;
   
-  /* Background Tints */
+  /* Secondary Colors */
   --color-sky-tint: #f2f8f9;
   --color-pink-tint: #fdf4f2;
   --color-cream-tint: #fefcf8;
@@ -1297,27 +1299,27 @@ transition: all 150ms ease;
 }
 
 .badge-jlpt--n5 {
+  background: var(--color-gray-tint);
+  color: var(--color-dark-gray);
+}
+
+.badge-jlpt--n4 {
+  background: var(--color-gray-tint);
+  color: var(--color-dark-gray);
+}
+
+.badge-jlpt--n3 {
   background: var(--color-cream-yellow);
   color: #8a7a4a;
 }
 
-.badge-jlpt--n4 {
+.badge-jlpt--n2 {
   background: var(--color-sky-blue);
   color: white;
 }
 
-.badge-jlpt--n3 {
-  background: var(--color-coral-pink);
-  color: white;
-}
-
-.badge-jlpt--n2 {
-  background: var(--color-dark-gray);
-  color: white;
-}
-
 .badge-jlpt--n1 {
-  background: #5a5a58;
+  background: var(--color-coral-pink);
   color: white;
 }
 ```
@@ -1985,7 +1987,7 @@ transition: all 150ms ease;
   --color-cream-yellow: #d9c791;
   --color-dark-gray: #9a9896;
   
-  /* 배경 틴트 (어두운 버전) */
+  /* 세컨더리 컬러 (어두운 버전) */
   --color-sky-tint: #2d3438;
   --color-pink-tint: #38302f;
   --color-cream-tint: #363530;
@@ -2181,7 +2183,7 @@ WCAG AA 기준을 준수합니다 (4.5:1 이상).
   --color-cream-yellow: #fadfa4;
   --color-dark-gray: #737371;
   
-  /* Colors - Tints */
+  /* Colors - Secondary */
   --color-sky-tint: #f2f8f9;
   --color-pink-tint: #fdf4f2;
   --color-cream-tint: #fefcf8;
