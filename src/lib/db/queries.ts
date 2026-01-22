@@ -29,6 +29,11 @@ export async function searchWords(query: string): Promise<Word[]> {
     .toArray();
 }
 
+// 단어 중복 체크 (정확히 일치하는 단어 찾기)
+export async function getWordByExactMatch(word: string): Promise<Word | undefined> {
+  return await db.words.where('word').equals(word).first();
+}
+
 // 학습 상태별 단어 조회
 export async function getWordsByStatus(status: StudyStatus): Promise<Word[]> {
   return await db.words.where('studyStatus').equals(status).toArray();

@@ -7,7 +7,7 @@ import { useSearch } from '@/features/search/hooks/useSearch';
 import { useWords } from '@/features/words/hooks/useWords';
 import { useGroups } from '@/features/groups/hooks/useGroups';
 import { suggestGroups } from '@/features/kanji/utils/groupSuggester';
-import { addWordToGroup, updateWord } from '@/lib/db/queries';
+import { addWordToGroup, updateWord, getWordByExactMatch } from '@/lib/db/queries';
 import type { GroupSuggestion } from '@/types/group';
 import type { DictionaryEntry } from '@/lib/data/sample-words';
 
@@ -28,6 +28,14 @@ function SearchPage() {
   async function handleSave(entry: DictionaryEntry) {
     setIsSaving(true);
     try {
+      // 중복 체크
+      const existingWord = await getWordByExactMatch(entry.word);
+      if (existingWord) {
+        alert('이미 저장된 단어입니다.');
+        setIsSaving(false);
+        return;
+      }
+      
       // 단어 저장
       const word = await createWord({
         word: entry.word,
