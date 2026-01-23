@@ -101,11 +101,9 @@ function GroupsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredGroups.map((group) => (
-              <Link
+              <div
                 key={group.id}
-                to="/groups/$groupId"
-                params={{ groupId: group.id }}
-                className="block p-5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white hover:border-[var(--color-sky-blue)] hover:shadow-[var(--shadow-subtle)] transition-all duration-150"
+                className="p-5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white hover:border-[var(--color-sky-blue)] hover:shadow-[var(--shadow-subtle)] transition-all duration-150"
               >
                 {/* 그룹 타입 배지 */}
                 <div className="mb-3">
@@ -128,9 +126,14 @@ function GroupsPage() {
                 </div>
 
                 {/* 그룹 이름 */}
-                <h3 className="text-[var(--font-size-h3)] font-semibold text-[var(--color-text)] mb-2 japanese">
-                  {group.name}
-                </h3>
+                <Link
+                  to="/groups/$groupId"
+                  params={{ groupId: group.id }}
+                >
+                  <h3 className="text-[var(--font-size-h3)] font-semibold text-[var(--color-text)] mb-2 japanese hover:text-[var(--color-sky-blue)] transition-colors">
+                    {group.name}
+                  </h3>
+                </Link>
 
                 {/* 한자 개수 */}
                 <p className="text-[var(--font-size-small)] text-[var(--color-text-light)]">
@@ -138,7 +141,7 @@ function GroupsPage() {
                 </p>
 
                 {/* 한자 미리보기 */}
-                <div className="mt-3 flex gap-1 flex-wrap">
+                <div className="mt-3 mb-4 flex gap-1 flex-wrap">
                   {group.kanjiCharacters.slice(0, 10).map((char) => (
                     <span
                       key={char}
@@ -153,7 +156,27 @@ function GroupsPage() {
                     </span>
                   )}
                 </div>
-              </Link>
+
+                {/* 액션 버튼들 */}
+                <div className="flex gap-2">
+                  <Link
+                    to="/study"
+                    search={{ source: 'group', groupId: group.id }}
+                    className="flex-1"
+                  >
+                    <button className="w-full px-4 py-2 rounded-[var(--radius-md)] bg-[var(--color-sky-blue)] text-white text-[var(--font-size-small)] font-medium hover:bg-[var(--color-sky-blue)]/90 transition-colors">
+                      학습 시작
+                    </button>
+                  </Link>
+                  <Link
+                    to="/groups/$groupId"
+                    params={{ groupId: group.id }}
+                    className="px-4 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] text-[var(--color-text-light)] text-[var(--font-size-small)] font-medium hover:border-[var(--color-sky-blue)] hover:text-[var(--color-text)] transition-all"
+                  >
+                    상세보기
+                  </Link>
+                </div>
+              </div>
             ))}
           </div>
         )}

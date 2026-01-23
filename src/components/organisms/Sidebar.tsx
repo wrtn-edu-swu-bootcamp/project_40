@@ -59,14 +59,14 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
   return (
     <aside className={cn('w-[220px] bg-[var(--color-gray-tint)] border-r border-[var(--color-border)] p-6 min-h-screen', className)}>
       {/* 로고 */}
-      <div className="mb-8 pb-6 border-b border-[var(--color-border)]">
-        <h1 className="text-[var(--font-size-h3)] font-semibold text-[var(--color-text)] mb-1 japanese">
+      <div className="mb-8 pb-6 border-b border-[var(--color-border)] pl-1">
+        <h1 className="text-[2rem] font-semibold text-[var(--color-text)] mb-1 japanese">
           漢字モア
         </h1>
       </div>
       
       {/* 네비게이션 */}
-      <nav className="mb-8">
+      <nav className="mb-8 pl-1">
         <ul className="space-y-1">
           {navItems.map((item) => (
             <li key={item.to}>
@@ -86,7 +86,7 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
       </nav>
       
       {/* 데이터 관리 */}
-      <div className="border-t border-[var(--color-border)] pt-6 mt-auto">
+      <div className="border-t border-[var(--color-border)] pt-6 mt-auto pl-1">
         <h3 className="text-[var(--font-size-tiny)] font-semibold text-[var(--color-text-light)] mb-3 uppercase tracking-wider">
           데이터 관리
         </h3>

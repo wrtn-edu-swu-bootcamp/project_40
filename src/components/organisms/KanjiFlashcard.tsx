@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils/cn';
 import type { KanjiInfo } from '@/types/kanji';
@@ -17,6 +17,24 @@ export const KanjiFlashcard = memo(function KanjiFlashcard({
   function handleFlip() {
     setIsFlipped(!isFlipped);
   }
+
+  // 카드가 바뀔 때마다 앞면으로 초기화
+  useEffect(() => {
+    setIsFlipped(false);
+  }, [kanjiInfo.character]);
+
+  // 스페이스바로 뒤집기
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.code === 'Space') {
+        e.preventDefault(); // 스페이스바의 기본 스크롤 동작 방지
+        setIsFlipped((prev) => !prev);
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <div className={cn('perspective-1000', className)}>

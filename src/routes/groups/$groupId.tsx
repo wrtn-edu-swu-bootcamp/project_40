@@ -107,9 +107,17 @@ function GroupDetailPage() {
               </p>
             </div>
 
-            <Button variant="secondary" onClick={handleDelete}>
-              그룹 삭제
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="primary"
+                onClick={() => navigate({ to: '/study', search: { source: 'group', groupId: group.id } })}
+              >
+                학습 시작
+              </Button>
+              <Button variant="secondary" onClick={handleDelete}>
+                그룹 삭제
+              </Button>
+            </div>
           </div>
         </div>
 

@@ -27,7 +27,6 @@ function StudyPage() {
 
   const [studyKanji, setStudyKanji] = useState<KanjiInfo[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedGroupId] = useState<string | undefined>(searchParams.groupId);
 
   // 학습할 한자 준비
   useEffect(() => {
@@ -35,16 +34,16 @@ function StudyPage() {
       // 북마크된 한자들
       const kanjiList = bookmarks.map((b) => b.kanjiInfo);
       setStudyKanji(kanjiList);
-    } else if (searchParams.source === 'group' && selectedGroupId) {
+    } else if (searchParams.source === 'group' && searchParams.groupId) {
       // 선택한 그룹의 한자들
-      const group = groups.find((g) => g.id === selectedGroupId);
+      const group = groups.find((g) => g.id === searchParams.groupId);
       if (group) {
         const kanjiList = getMultipleKanjiFromDictionary(group.kanjiCharacters);
         setStudyKanji(kanjiList);
       }
     }
     setCurrentIndex(0);
-  }, [searchParams.source, selectedGroupId, bookmarks, groups]);
+  }, [searchParams.source, searchParams.groupId, bookmarks, groups]);
 
   const currentKanji = studyKanji[currentIndex];
   const progress =
@@ -79,7 +78,7 @@ function StudyPage() {
   }, [handlePrevious, handleNext]);
 
   // 소스 선택 화면
-  if (!searchParams.source || (searchParams.source === 'group' && !selectedGroupId)) {
+  if (!searchParams.source || (searchParams.source === 'group' && !searchParams.groupId)) {
     return (
       <div className="min-h-screen bg-[var(--color-ivory)] p-8">
         <div className="max-w-3xl mx-auto">
