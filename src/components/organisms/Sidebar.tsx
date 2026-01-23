@@ -50,22 +50,19 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
   }
   
   const navItems = [
-    { to: '/search', label: '단어 검색' },
-    { to: '/groups', label: '한자 그룹' },
-    { to: '/bookmarks', label: '저장된 단어' },
-    { to: '/study', label: '학습 모드' },
+    { to: '/search', label: '検索' },
+    { to: '/groups', label: 'グループ' },
+    { to: '/bookmarks', label: 'ブックマーク' },
+    { to: '/study', label: '学習' },
   ];
   
   return (
     <aside className={cn('w-[220px] bg-[var(--color-gray-tint)] border-r border-[var(--color-border)] p-6 min-h-screen', className)}>
       {/* 로고 */}
       <div className="mb-8 pb-6 border-b border-[var(--color-border)]">
-        <h1 className="text-[var(--font-size-h3)] font-semibold text-[var(--color-text)] mb-1">
-          일본어 단어장
+        <h1 className="text-[var(--font-size-h3)] font-semibold text-[var(--color-text)] mb-1 japanese">
+          漢字モア
         </h1>
-        <p className="text-[var(--font-size-tiny)] text-[var(--color-text-light)]">
-          한자 자동 그룹화
-        </p>
       </div>
       
       {/* 네비게이션 */}
@@ -81,7 +78,7 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
                   '[&.active]:bg-[var(--color-cream-tint)] [&.active]:text-[var(--color-sky-blue)] [&.active]:border-l-[3px] [&.active]:border-[var(--color-sky-blue)] [&.active]:font-semibold [&.active]:pl-[13px]'
                 )}
               >
-                <span>{item.label}</span>
+                <span className="japanese">{item.label}</span>
               </Link>
             </li>
           ))}
@@ -98,18 +95,18 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
             variant="secondary"
             size="sm"
             onClick={handleExport}
-            className="w-full justify-start text-[var(--font-size-small)]"
+            className="w-full justify-start text-[var(--font-size-small)] japanese"
           >
-            내보내기
+            エクスポート
           </Button>
           <Button
             variant="secondary"
             size="sm"
             onClick={handleImport}
             disabled={isImporting}
-            className="w-full justify-start text-[var(--font-size-small)]"
+            className="w-full justify-start text-[var(--font-size-small)] japanese"
           >
-            {isImporting ? '가져오는 중...' : '가져오기'}
+            {isImporting ? 'インポート中...' : 'インポート'}
           </Button>
         </div>
       </div>
