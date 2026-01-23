@@ -6,7 +6,7 @@
 /* 디자인 시스템 CSS 변수 */
 :root {
   /* Point Colors */
-  --color-sky-blue: #8fc1e3;
+  --color-sky-blue: #3a7ba3;
   --color-coral-pink: #e16a84;
   --color-cream-yellow: #fadfa4;
   --color-dark-gray: #737371;
@@ -161,6 +161,16 @@ button {
   border: none;
   background: none;
   cursor: pointer;
+}
+
+/* Primary 버튼 스타일 강제 적용 */
+button.bg-\[var\(--color-sky-blue\)\] {
+  background-color: var(--color-sky-blue) !important;
+  color: white !important;
+}
+
+button.bg-\[var\(--color-sky-blue\)\]:hover {
+  background-color: #2a6b93 !important;
 }
 
 /* 입력 필드 기본 스타일 */

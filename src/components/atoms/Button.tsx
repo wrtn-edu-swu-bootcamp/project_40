@@ -18,7 +18,7 @@ export const Button = memo(function Button({
   const baseStyles = 'inline-flex items-center justify-center rounded-[var(--radius-lg)] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:brightness-95';
   
   const variantStyles = {
-    primary: 'bg-[var(--color-sky-blue)] text-white hover:bg-[#7ab0d0] active:scale-[0.98] shadow-[var(--shadow-subtle)]',
+    primary: 'bg-[var(--color-sky-blue)] text-white hover:bg-[#2a6b93] active:scale-[0.98] shadow-[var(--shadow-subtle)] font-semibold',
     secondary: 'border border-[var(--color-border)] bg-transparent text-[var(--color-dark-gray)] hover:border-[var(--color-sky-blue)] hover:bg-[var(--color-sky-tint)]',
     ghost: 'bg-transparent text-[var(--color-sky-blue)] hover:bg-[var(--color-sky-tint)]',
     danger: 'bg-[var(--color-coral-pink)] text-white hover:bg-[#d15876] active:scale-[0.98]',
@@ -30,6 +30,10 @@ export const Button = memo(function Button({
     lg: 'h-11 px-8 text-[var(--font-size-h3)]',
   };
   
+  const inlineStyles = variant === 'primary' 
+    ? { backgroundColor: 'var(--color-sky-blue)', color: 'white' }
+    : undefined;
+
   return (
     <button
       className={cn(
@@ -38,6 +42,7 @@ export const Button = memo(function Button({
         sizeStyles[size],
         className
       )}
+      style={inlineStyles}
       disabled={disabled}
       {...props}
     >
