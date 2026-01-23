@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Badge } from '@/components/atoms/Badge';
+import { Button } from '@/components/atoms/Button';
 import { useGroups } from '@/features/groups/hooks/useGroups';
 import type { GroupType } from '@/types/group';
 
@@ -9,7 +10,7 @@ export const Route = createFileRoute('/groups/')({
 });
 
 function GroupsPage() {
-  const { groups, isLoading } = useGroups();
+  const { groups = [], isLoading } = useGroups();
   const [filterType, setFilterType] = useState<GroupType | 'all'>('all');
 
   // 필터링된 그룹
@@ -94,9 +95,12 @@ function GroupsPage() {
                 ? '아직 생성된 그룹이 없습니다.'
                 : '해당 타입의 그룹이 없습니다.'}
             </p>
-            <p className="text-[var(--font-size-small)] text-[var(--color-text-lighter)]">
+            <p className="text-[var(--font-size-small)] text-[var(--color-text-lighter)] mb-6">
               단어 검색 후 한자 구성 요소를 클릭하면 자동으로 그룹이 생성됩니다.
             </p>
+            <Link to="/search">
+              <Button>단어 검색하기</Button>
+            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -137,12 +141,12 @@ function GroupsPage() {
 
                 {/* 한자 개수 */}
                 <p className="text-[var(--font-size-small)] text-[var(--color-text-light)]">
-                  {group.kanjiCharacters.length}개의 한자
+                  {group.kanjiCharacters?.length || 0}개의 한자
                 </p>
 
                 {/* 한자 미리보기 */}
                 <div className="mt-3 mb-4 flex gap-1 flex-wrap">
-                  {group.kanjiCharacters.slice(0, 10).map((char) => (
+                  {(group.kanjiCharacters || []).slice(0, 10).map((char) => (
                     <span
                       key={char}
                       className="inline-flex items-center justify-center w-8 h-8 rounded bg-[var(--color-cream-tint)] text-[var(--font-size-body)] font-medium japanese"
@@ -150,9 +154,9 @@ function GroupsPage() {
                       {char}
                     </span>
                   ))}
-                  {group.kanjiCharacters.length > 10 && (
+                  {(group.kanjiCharacters?.length || 0) > 10 && (
                     <span className="inline-flex items-center justify-center w-8 h-8 text-[var(--font-size-small)] text-[var(--color-text-lighter)]">
-                      +{group.kanjiCharacters.length - 10}
+                      +{(group.kanjiCharacters?.length || 0) - 10}
                     </span>
                   )}
                 </div>

@@ -8,7 +8,7 @@ export const Route = createFileRoute('/bookmarks/')({
 });
 
 function BookmarksPage() {
-  const { bookmarks, isLoading, removeBookmark } = useBookmarks();
+  const { bookmarks = [], isLoading, removeBookmark } = useBookmarks();
 
   async function handleBookmarkToggle(character: string) {
     const bookmark = bookmarks.find((b) => b.character === character);

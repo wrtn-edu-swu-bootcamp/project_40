@@ -59,24 +59,25 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
   return (
     <aside className={cn('w-[220px] bg-[var(--color-gray-tint)] border-r border-[var(--color-border)] p-6 min-h-screen', className)}>
       {/* 로고 */}
-      <div className="mb-8 pb-6 border-b border-[var(--color-border)] pl-1">
-        <h1 className="text-[2rem] font-semibold text-[var(--color-text)] mb-1 japanese">
+      <div className="mb-8 pb-6 border-b border-[var(--color-border)]">
+        <h1 className="text-[2rem] font-semibold text-[var(--color-text)] mb-1 japanese" style={{ paddingLeft: '20px' }}>
           漢字モア
         </h1>
       </div>
       
       {/* 네비게이션 */}
-      <nav className="mb-8 pl-1">
+      <nav className="mb-8">
         <ul className="space-y-1">
           {navItems.map((item) => (
             <li key={item.to}>
               <Link
                 to={item.to}
                 className={cn(
-                  'flex items-center gap-3 px-4 py-3 rounded-[var(--radius-md)] text-[var(--font-size-body)] text-[var(--color-text-light)] transition-all duration-150',
+                  'flex items-center gap-3 pr-4 py-3 rounded-[var(--radius-md)] text-[var(--font-size-body)] text-[var(--color-text-light)] transition-all duration-150',
                   'hover:bg-[var(--color-cream-tint)] hover:text-[var(--color-text)]',
-                  '[&.active]:bg-[var(--color-cream-tint)] [&.active]:text-[var(--color-sky-blue)] [&.active]:border-l-[3px] [&.active]:border-[var(--color-sky-blue)] [&.active]:font-semibold [&.active]:pl-[13px]'
+                  '[&.active]:bg-[var(--color-cream-tint)] [&.active]:text-[var(--color-sky-blue)] [&.active]:border-l-[3px] [&.active]:border-[var(--color-sky-blue)] [&.active]:font-semibold'
                 )}
+                style={{ paddingLeft: '20px' }}
               >
                 <span className="japanese">{item.label}</span>
               </Link>
@@ -86,8 +87,8 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
       </nav>
       
       {/* 데이터 관리 */}
-      <div className="border-t border-[var(--color-border)] pt-6 mt-auto pl-1">
-        <h3 className="text-[var(--font-size-tiny)] font-semibold text-[var(--color-text-light)] mb-3 uppercase tracking-wider">
+      <div className="border-t border-[var(--color-border)] pt-6 mt-auto">
+        <h3 className="text-[var(--font-size-tiny)] font-semibold text-[var(--color-text-light)] mb-3 uppercase tracking-wider" style={{ paddingLeft: '20px' }}>
           데이터 관리
         </h3>
         <div className="space-y-2">
@@ -96,6 +97,7 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
             size="sm"
             onClick={handleExport}
             className="w-full justify-start text-[var(--font-size-small)] japanese"
+            style={{ paddingLeft: '20px' }}
           >
             エクスポート
           </Button>
@@ -105,6 +107,7 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
             onClick={handleImport}
             disabled={isImporting}
             className="w-full justify-start text-[var(--font-size-small)] japanese"
+            style={{ paddingLeft: '20px' }}
           >
             {isImporting ? 'インポート中...' : 'インポート'}
           </Button>

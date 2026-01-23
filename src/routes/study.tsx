@@ -22,8 +22,8 @@ export const Route = createFileRoute('/study')({
 
 function StudyPage() {
   const searchParams = useSearch({ from: '/study' });
-  const { bookmarks } = useBookmarks();
-  const { groups } = useGroups();
+  const { bookmarks = [] } = useBookmarks();
+  const { groups = [] } = useGroups();
 
   const [studyKanji, setStudyKanji] = useState<KanjiInfo[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -37,7 +37,7 @@ function StudyPage() {
     } else if (searchParams.source === 'group' && searchParams.groupId) {
       // 선택한 그룹의 한자들
       const group = groups.find((g) => g.id === searchParams.groupId);
-      if (group) {
+      if (group && group.kanjiCharacters) {
         const kanjiList = getMultipleKanjiFromDictionary(group.kanjiCharacters);
         setStudyKanji(kanjiList);
       }
@@ -88,18 +88,32 @@ function StudyPage() {
 
           <div className="space-y-4">
             {/* 북마크로 학습 */}
-            <Link
-              to="/study"
-              search={{ source: 'bookmarks' }}
-              className="block p-6 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white hover:border-[var(--color-sky-blue)] hover:shadow-[var(--shadow-subtle)] transition-all duration-150"
-            >
-              <h3 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-2">
-                북마크된 한자 학습
-              </h3>
-              <p className="text-[var(--font-size-body)] text-[var(--color-text-light)]">
-                {bookmarks.length}개의 북마크된 한자를 학습합니다
-              </p>
-            </Link>
+            {bookmarks.length > 0 ? (
+              <Link
+                to="/study"
+                search={{ source: 'bookmarks' }}
+                className="block p-6 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white hover:border-[var(--color-sky-blue)] hover:shadow-[var(--shadow-subtle)] transition-all duration-150"
+              >
+                <h3 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-2">
+                  북마크된 한자 학습
+                </h3>
+                <p className="text-[var(--font-size-body)] text-[var(--color-text-light)]">
+                  {bookmarks.length}개의 북마크된 한자를 학습합니다
+                </p>
+              </Link>
+            ) : (
+              <div className="p-6 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white">
+                <h3 className="text-[var(--font-size-h2)] font-semibold text-[var(--color-text)] mb-2">
+                  북마크된 한자 학습
+                </h3>
+                <p className="text-[var(--font-size-body)] text-[var(--color-text-light)] mb-3">
+                  아직 북마크한 한자가 없습니다.
+                </p>
+                <p className="text-[var(--font-size-small)] text-[var(--color-text-lighter)]">
+                  단어 검색 후 한자 옆의 별 아이콘을 클릭하여 북마크하세요.
+                </p>
+              </div>
+            )}
 
             {/* 그룹별 학습 */}
             <div className="p-6 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white">
@@ -108,9 +122,14 @@ function StudyPage() {
               </h3>
 
               {groups.length === 0 ? (
-                <p className="text-[var(--color-text-light)] mb-4">
-                  아직 생성된 그룹이 없습니다.
-                </p>
+                <div>
+                  <p className="text-[var(--color-text-light)] mb-2">
+                    아직 생성된 그룹이 없습니다.
+                  </p>
+                  <p className="text-[var(--font-size-small)] text-[var(--color-text-lighter)]">
+                    단어 검색 후 한자 구성 요소를 클릭하면 자동으로 그룹이 생성됩니다.
+                  </p>
+                </div>
               ) : (
                 <div className="space-y-2">
                   {groups.map((group) => (
@@ -125,7 +144,7 @@ function StudyPage() {
                           {group.name}
                         </span>
                         <span className="text-[var(--font-size-small)] text-[var(--color-text-light)]">
-                          {group.kanjiCharacters.length}개
+                          {group.kanjiCharacters?.length || 0}개
                         </span>
                       </div>
                     </Link>
